@@ -1,2 +1,2 @@
 functions-framework==3.*
-oangiapy[web] @ git+https://github.com/oangia/oangia.github.io.git#subdirectory=oangiapy
+oangiapy[web] @ git+https://github.com/oangia/oangiapy.git

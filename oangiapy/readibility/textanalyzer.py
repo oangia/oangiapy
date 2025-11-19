@@ -290,3 +290,96 @@ class StatsComparer:
         print(self.format_comparison("Shortest paragraph", p['shortest'], pr['shortest'], " words"))
         print(self.format_comparison("Longest paragraph", p['longest'], pr['longest'], " words"))
 
+import math
+
+def hex_to_rgb(hex_color):
+    hex_color = hex_color.lstrip('#')
+    n = int(hex_color, 16)
+    r = (n >> 16) & 255
+    g = (n >> 8) & 255
+    b = n & 255
+    return r, g, b
+
+def interpolate(start, end, t):
+    sr, sg, sb = hex_to_rgb(start)
+    er, eg, eb = hex_to_rgb(end)
+    r = round(sr + (er - sr) * t)
+    g = round(sg + (eg - sg) * t)
+    b = round(sb + (eb - sb) * t)
+    return f"rgb({r}, {g}, {b})"
+
+class ReadabilityEngine:
+    EXPECTED_RESULTS = {
+        'Consensus Grade Level': 14.89,
+        'Automated Readability Index': 15.51,
+        'Flesch Reading Ease': 20.00,
+        'Gunning Fog Index': 16.20,
+        'Flesch-Kincaid Grade Level': 14.07,
+        'Coleman-Liau Index': 19.05,
+        'SMOG Index': 11.16,
+        'Linsear Write': 10.50,
+        'FORCAST': 14.64
+    }
+
+    ARI_TABLE = [
+        {'min': -math.inf, 'max': 0.99, 'grade': "Kindergarten", 'level': "Extremely Easy", 'ages': "5–6 yrs"},
+        {'min': 1, 'max': 1.99, 'grade': "1st Grade", 'level': "Extremely Easy", 'ages': "6–7 yrs"},
+        {'min': 2, 'max': 2.99, 'grade': "2nd Grade", 'level': "Very Easy", 'ages': "7–8 yrs"},
+        {'min': 3, 'max': 3.99, 'grade': "3rd Grade", 'level': "Very Easy", 'ages': "8–9 yrs"},
+        {'min': 4, 'max': 4.99, 'grade': "4th Grade", 'level': "Easy", 'ages': "9–10 yrs"},
+        {'min': 5, 'max': 5.99, 'grade': "5th Grade", 'level': "Fairly Easy", 'ages': "10–11 yrs"},
+        {'min': 6, 'max': 6.99, 'grade': "6th Grade", 'level': "Fairly Easy", 'ages': "11–12 yrs"},
+        {'min': 7, 'max': 7.99, 'grade': "7th Grade", 'level': "Average", 'ages': "12–13 yrs"},
+        {'min': 8, 'max': 8.99, 'grade': "8th Grade", 'level': "Average", 'ages': "13–14 yrs"},
+        {'min': 9, 'max': 9.99, 'grade': "9th Grade", 'level': "Slightly Difficult", 'ages': "14–15 yrs"},
+        {'min': 10, 'max': 10.99, 'grade': "10th Grade", 'level': "Somewhat Difficult", 'ages': "15–16 yrs"},
+        {'min': 11, 'max': 11.99, 'grade': "11th Grade", 'level': "Fairly Difficult", 'ages': "16–17 yrs"},
+        {'min': 12, 'max': 12.99, 'grade': "12th Grade", 'level': "Difficult", 'ages': "17–18 yrs"},
+        {'min': 13, 'max': math.inf, 'grade': "College", 'level': "Very Difficult", 'ages': "18–22 yrs"},
+    ]
+
+    FRE_TABLE = [
+        {'min': 140, 'max': 200, 'grade': "Kindergarten", 'level': "Extremely Easy", 'ages': "5–6 yrs", 'gradeRange': 0},
+        {'min': 130, 'max': 139, 'grade': "1st Grade", 'level': "Very Easy", 'ages': "6–7 yrs", 'gradeRange': 1},
+        {'min': 120, 'max': 129, 'grade': "2nd Grade", 'level': "Very Easy", 'ages': "7–8 yrs", 'gradeRange': 2},
+        {'min': 110, 'max': 119, 'grade': "3rd Grade", 'level': "Very Easy", 'ages': "8–9 yrs", 'gradeRange': 3},
+        {'min': 100, 'max': 109, 'grade': "4th Grade", 'level': "Very Easy", 'ages': "9–10 yrs", 'gradeRange': 4},
+        {'min': 90, 'max': 99, 'grade': "5th Grade", 'level': "Very Easy", 'ages': "10–11 yrs", 'gradeRange': 5},
+        {'min': 80, 'max': 89, 'grade': "6th Grade", 'level': "Easy", 'ages': "11–12 yrs", 'gradeRange': 6},
+        {'min': 70, 'max': 79, 'grade': "7th Grade", 'level': "Fairly Easy", 'ages': "12–13 yrs", 'gradeRange': 7},
+        {'min': 60, 'max': 69, 'grade': "8th & 9th Grade", 'level': "Standard", 'ages': "13–15 yrs", 'gradeRange': 8.5},
+        {'min': 50, 'max': 59, 'grade': "10–12th Grade", 'level': "Fairly Difficult", 'ages': "15–18 yrs", 'gradeRange': 11},
+        {'min': 30, 'max': 49, 'grade': "College", 'level': "Difficult", 'ages': "18+ yrs", 'gradeRange': 13.5},
+        {'min': 0, 'max': 29, 'grade': "Professional", 'level': "Very Difficult", 'ages': "18+ yrs", 'gradeRange': 14.5},
+    ]
+
+    @staticmethod
+    def get_color(grade_range):
+        g = max(0, float(grade_range))
+        if g < 6:
+            step = g / 5
+            return interpolate('#2ECC71', '#1ABC9C', step)
+        elif g < 10:
+            step = (g - 6) / 3
+            return interpolate('#F7DC6F', '#F1C40F', max(0, step))
+        elif g < 13:
+            step = (g - 10) / 2
+            return interpolate('#E67E22', '#D35400', max(0, step))
+        else:
+            return '#C0392B'
+
+    @staticmethod
+    def lookup_score(score, table):
+        score = float(score)
+        for row in table:
+            if row['min'] <= score <= row['max']:
+                row = row.copy()
+                row['color'] = ReadabilityEngine.get_color(row.get('gradeRange', score))
+                row['score'] = score
+                return row
+        return {}
+
+# Example usage:
+# engine = ReadabilityEngine()
+# data = TextAnalyzer().analyze(text)
+# ari_result = engine.lookup_score(engine.calculate_ARI(data)['score'], engine.ARI_TABLE)

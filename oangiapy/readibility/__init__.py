@@ -280,8 +280,18 @@ class StatsComparer:
         syr = self.reference_data['syllables']
         print(self.format_comparison("Total syllables", sy['total'], syr['total']))
         print(self.format_comparison("Average syllables per word", sy['avgPerWord'], syr['avgPerWord'], '', 0.01))
-        for i, label in [(1,"1 syllable"),(2,"2 syllables"),(3,"3 syllables"),(4,"4 syllables"),(5,"5 syllables"),(6,"6 syllables"),('sevenPlusSyl',"7+ syllables")]:
-            print(self.format_comparison(f"Words with {label}", sy[i] if isinstance(i,int) else sy[i], syr[i] if isinstance(i,int) else syr[i]))
+        sy_keys = [
+            ('oneSyl', "1 syllable"),
+            ('twoSyl', "2 syllables"),
+            ('threeSyl', "3 syllables"),
+            ('fourSyl', "4 syllables"),
+            ('fiveSyl', "5 syllables"),
+            ('sixSyl', "6 syllables"),
+            ('sevenPlusSyl', "7+ syllables")
+        ]
+        
+        for key, label in sy_keys:
+            print(self.format_comparison(f"Words with {label}", sy[key], syr[key]))
 
         print("\n--- PARAGRAPH STATS ---")
         p = data['paragraphs']

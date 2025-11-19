@@ -222,3 +222,71 @@ class TextAnalyzer:
                 "sevenPlusSyl": sum(1 for s in syl_list if s >= 7)
             }
         }
+
+class StatsComparer:
+    def __init__(self, reference_data):
+        self.reference_data = reference_data
+
+    def compare_value(self, calculated, reference, tolerance=0):
+        match = abs(calculated - reference) <= tolerance
+        color = "\033[92m" if match else "\033[91m"  # green/red in console
+        icon = "✓" if match else "✗"
+        return match, color, icon
+
+    def format_comparison(self, label, calculated, reference, unit='', tolerance=0):
+        match, color, icon = self.compare_value(calculated, reference, tolerance)
+        return f"{color}{label}: {calculated}{unit} {icon} (Expected: {reference}{unit})\033[0m"
+
+    def show_stats(self, data):
+        print("\n--- WORD/CHARACTER STATS ---")
+        c = data['character']
+        r = self.reference_data['character']
+        print(self.format_comparison("Total # of words", c['totalWords'], r['totalWords']))
+        print(self.format_comparison("Average word length", c['avgWordLength'], r['avgWordLength'], " characters"))
+        lw_match = c['longestWord'] == r['longestWord']
+        lw_color = "\033[92m" if lw_match else "\033[91m"
+        lw_icon = "✓" if lw_match else "✗"
+        print(f"{lw_color}Longest word: {c['longestWord']} ({c['longestWordLength']} chars) {lw_icon} "
+              f"(Expected: {r['longestWord']} ({r['longestWordLength']} chars))\033[0m")
+        print(self.format_comparison("Character Count (with spaces)", c['charsWithSpaces'], r['charsWithSpaces'], " chars"))
+        print(self.format_comparison("Character Count (without spaces)", c['charsWithoutSpaces'], r['charsWithoutSpaces'], " chars"))
+        print(self.format_comparison("Letters A-Z", c['lettersAZ'], r['lettersAZ'], " chars"))
+        print(self.format_comparison("Alpha-numeric chars", c['alphaNumeric'], r['alphaNumeric'], " chars"))
+
+        print("\n--- TEXT DIFFICULTY ---")
+        d = data['difficulty']
+        dr = self.reference_data['difficulty']
+        for key in ['hardWords','longSentences','adverbs','hardAdjectives','nominals','passiveWords','weakVerbs']:
+            print(self.format_comparison(key, d[key], dr[key]))
+
+        print("\n--- SENTENCE STATS ---")
+        s = data['sentences']
+        sr = self.reference_data['sentences']
+        print(self.format_comparison("Total # of sentences", s['total'], sr['total']))
+        print(self.format_comparison("Average sentence length", s['avgLength'], sr['avgLength'], " words"))
+        print(self.format_comparison("Active voice sentences", s['activeVoice'], sr['activeVoice']))
+        print(self.format_comparison("Passive voice sentences", s['passiveVoice'], sr['passiveVoice']))
+        for key in ['short','medium','long']:
+            print(self.format_comparison(f"Total # of {key} sentences", s[key], sr[key]))
+
+        print("\n--- WORD STATS ---")
+        w = data['words']
+        wr = self.reference_data['words']
+        for key, label in [('easy', '# of Easy Words'), ('hard', '# of Hard Words'), ('unique', 'Unique words'), ('repeat', 'Repeat words')]:
+            print(self.format_comparison(label, w[key], wr[key]))
+
+        print("\n--- SYLLABLE STATS ---")
+        sy = data['syllables']
+        syr = self.reference_data['syllables']
+        print(self.format_comparison("Total syllables", sy['total'], syr['total']))
+        print(self.format_comparison("Average syllables per word", sy['avgPerWord'], syr['avgPerWord'], '', 0.01))
+        for i, label in [(1,"1 syllable"),(2,"2 syllables"),(3,"3 syllables"),(4,"4 syllables"),(5,"5 syllables"),(6,"6 syllables"),('sevenPlusSyl',"7+ syllables")]:
+            print(self.format_comparison(f"Words with {label}", sy[i] if isinstance(i,int) else sy[i], syr[i] if isinstance(i,int) else syr[i]))
+
+        print("\n--- PARAGRAPH STATS ---")
+        p = data['paragraphs']
+        pr = self.reference_data['paragraphs']
+        print(self.format_comparison("Number of paragraphs", p['count'], pr['count']))
+        print(self.format_comparison("Shortest paragraph", p['shortest'], pr['shortest'], " words"))
+        print(self.format_comparison("Longest paragraph", p['longest'], pr['longest'], " words"))
+

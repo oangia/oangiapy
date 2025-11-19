@@ -315,7 +315,7 @@ def interpolate(start, end, t):
 
 class ReadabilityEngine:
     ARI_TABLE = [
-        {'min': -math.inf, 'max': 0.99, 'grade': "Kindergarten", 'level': "Extremely Easy", 'ages': "5–6 yrs"},
+        {'min': -1000, 'max': 0.99, 'grade': "Kindergarten", 'level': "Extremely Easy", 'ages': "5–6 yrs"},
         {'min': 1, 'max': 1.99, 'grade': "1st Grade", 'level': "Extremely Easy", 'ages': "6–7 yrs"},
         {'min': 2, 'max': 2.99, 'grade': "2nd Grade", 'level': "Very Easy", 'ages': "7–8 yrs"},
         {'min': 3, 'max': 3.99, 'grade': "3rd Grade", 'level': "Very Easy", 'ages': "8–9 yrs"},
@@ -328,7 +328,7 @@ class ReadabilityEngine:
         {'min': 10, 'max': 10.99, 'grade': "10th Grade", 'level': "Somewhat Difficult", 'ages': "15–16 yrs"},
         {'min': 11, 'max': 11.99, 'grade': "11th Grade", 'level': "Fairly Difficult", 'ages': "16–17 yrs"},
         {'min': 12, 'max': 12.99, 'grade': "12th Grade", 'level': "Difficult", 'ages': "17–18 yrs"},
-        {'min': 13, 'max': math.inf, 'grade': "College", 'level': "Very Difficult", 'ages': "18–22 yrs"}
+        {'min': 13, 'max': 1000, 'grade': "College", 'level': "Very Difficult", 'ages': "18–22 yrs"}
     ]
 
     FRE_TABLE = [

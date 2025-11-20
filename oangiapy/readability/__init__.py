@@ -239,13 +239,16 @@ class ReadabilityEngine:
 
 def handle_request(request):
     if request.method == 'OPTIONS':
-        return {}
+        return ({}, 200)
         
     if request.method == 'POST':
         text = request.json.get('text')   # if raw text
+        length = len(text)
+        if length < 100 or length > 1000:
+            return ({'error': 'Input text must between 100 and 1000 characters long.'}, 400)
         pub_key = request.json.get("pub")
         engine = ReadabilityEngine(text)
         encrypted = Crypto.rsa_encrypt({"r": engine.calculate()}, pub_key)
-        return {"r": encrypted}
+        return ({"r": encrypted}, 200)
 
     return 'Hello from Flask!'

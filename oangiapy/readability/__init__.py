@@ -1,6 +1,23 @@
 import re
 import unicodedata
+import base64, json
+from cryptography.hazmat.primitives.asymmetric import padding
+from cryptography.hazmat.primitives import hashes, serialization
 
+def encrypt_for_client(response_data: dict, client_pub_key_b64: str) -> str:
+    client_pub_bytes = base64.b64decode(client_pub_key_b64)
+    client_pub_key = serialization.load_der_public_key(client_pub_bytes)
+    plaintext = json.dumps(response_data).encode()
+    cipher = client_pub_key.encrypt(
+        plaintext,
+        padding.OAEP(
+            mgf=padding.MGF1(algorithm=hashes.SHA256()),
+            algorithm=hashes.SHA256(),
+            label=None
+        )
+    )
+    return base64.b64encode(cipher).decode()
+    
 class TextAnalyzer:
     REFERENCE_DATA = {
         "difficulty": {

@@ -224,16 +224,16 @@ class ReadabilityEngine:
         one_syl = self.data['syllables']['oneSyl']
         return round(20 - ((one_syl / words) * 150 / 10), 2)
 
-    def calculate(self, data):
+    def calculate(self):
         results = [
-            self.calcARI(data),
-            self.calcFlesch(data),
-            self.calcGFI(data),
-            self.calcFK(data),
-            self.calcCLI(data),
-            self.calcSMOG(data),
-            self.calcLinsearWrite(data),
-            self.calcFORCAST(data)
+            self.calcARI(),
+            self.calcFlesch(),
+            self.calcGFI(),
+            self.calcFK(),
+            self.calcCLI(),
+            self.calcSMOG(),
+            self.calcLinsearWrite(),
+            self.calcFORCAST()
         ]
         return results
 

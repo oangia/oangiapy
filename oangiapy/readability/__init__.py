@@ -240,6 +240,7 @@ class ReadabilityEngine:
 def handle_request(request):
     if request.method == 'OPTIONS':
         return ({}, 200)
+    return (request.host, 200)
     if request.host != 'agent52.web.app':
         return ({"error": "Not found"}, 404)
     if request.method == 'POST':

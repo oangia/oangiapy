@@ -391,3 +391,23 @@ class View:
             print(f"{res['name']}")
             print(f"Score: {res['score']} | Grade: {res['grade']} | Level: {res['level']} | Ages: {res['ages']}")
             print(f"{res['formulaHTML']}\n")
+
+
+def handle_request(request):
+    if request.method == 'POST':
+        text = request.json.get('text')   # if raw text
+        pub_key = request.json.get("pub")
+        text_analyzer = TextAnalyzer()
+        formulas = ReadabilityEngine()
+        data = text_analyzer.analyze(text)  # Analyze the text
+        results = formulas.calculate(data)
+        encrypted = encrypt_for_client({"r": results}, pub_key)
+        response = jsonify({"r": encrypted})
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        return response
+        
+    response = jsonify({})
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
+    return response

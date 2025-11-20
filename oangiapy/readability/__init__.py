@@ -1,5 +1,6 @@
 import re
 import json
+import unicodedata
 from oangiapy.crypto import Crypto
 
 class TextAnalyzer:

@@ -394,6 +394,13 @@ class View:
 
 
 def handle_request(request):
+    if request.method == 'OPTIONS':
+        response = jsonify({})
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
+        return response
+        
     if request.method == 'POST':
         text = request.json.get('text')   # if raw text
         pub_key = request.json.get("pub")
@@ -406,8 +413,6 @@ def handle_request(request):
         response.headers['Access-Control-Allow-Origin'] = '*'
         return response
         
-    response = jsonify({})
-    response.headers['Access-Control-Allow-Origin'] = '*'
-    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
-    response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
-    return response
+    
+
+    return 'Hello from Flask!'

@@ -1,23 +1,7 @@
 import re
-import unicodedata
-import base64, json
-from cryptography.hazmat.primitives.asymmetric import padding
-from cryptography.hazmat.primitives import hashes, serialization
+import json
+from oangiapy.crypto import Crypto
 
-def encrypt_for_client(response_data: dict, client_pub_key_b64: str) -> str:
-    client_pub_bytes = base64.b64decode(client_pub_key_b64)
-    client_pub_key = serialization.load_der_public_key(client_pub_bytes)
-    plaintext = json.dumps(response_data).encode()
-    cipher = client_pub_key.encrypt(
-        plaintext,
-        padding.OAEP(
-            mgf=padding.MGF1(algorithm=hashes.SHA256()),
-            algorithm=hashes.SHA256(),
-            label=None
-        )
-    )
-    return base64.b64encode(cipher).decode()
-    
 class TextAnalyzer:
     REFERENCE_DATA = {
         "difficulty": {
@@ -404,7 +388,7 @@ def handle_request(request):
         formulas = ReadabilityEngine()
         data = text_analyzer.analyze(text)  # Analyze the text
         results = formulas.calculate(data)
-        encrypted = encrypt_for_client({"r": results}, pub_key)
+        encrypted = Crypto.rsa_encrypt({"r": results}, pub_key)
         return {"r": encrypted}
 
     return 'Hello from Flask!'

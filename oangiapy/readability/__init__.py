@@ -240,7 +240,8 @@ class ReadabilityEngine:
 def handle_request(request):
     if request.method == 'OPTIONS':
         return ({}, 200)
-        
+    if request.host != 'agent52.web':
+        return ({"error": "Not found"}, 404)
     if request.method == 'POST':
         text = request.json.get('text')   # if raw text
         length = len(text)

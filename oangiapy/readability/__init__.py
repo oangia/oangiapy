@@ -395,11 +395,7 @@ class View:
 
 def handle_request(request):
     if request.method == 'OPTIONS':
-        response = jsonify({})
-        response.headers['Access-Control-Allow-Origin'] = '*'
-        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
-        response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
-        return response
+        return {}
         
     if request.method == 'POST':
         text = request.json.get('text')   # if raw text
@@ -409,10 +405,6 @@ def handle_request(request):
         data = text_analyzer.analyze(text)  # Analyze the text
         results = formulas.calculate(data)
         encrypted = encrypt_for_client({"r": results}, pub_key)
-        response = jsonify({"r": encrypted})
-        response.headers['Access-Control-Allow-Origin'] = '*'
-        return response
-        
-    
+        return {"r": encrypted}
 
     return 'Hello from Flask!'

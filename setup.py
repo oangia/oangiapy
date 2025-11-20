@@ -6,7 +6,7 @@ setup(
     install_requires=[
     ],
     extras_require={
-        'api': ['cryptography'],
+        'api': ['cryptography==46.0.3'],
         'web': ["pymongo", "firebase-admin"],
         'youtube': ['yt-dlp', 'webvtt-py'],
         'video': ['pydub', 'moviepy==1.0.3'],

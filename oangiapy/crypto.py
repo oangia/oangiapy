@@ -7,7 +7,8 @@ from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives import padding as sym_padding
 from cryptography.hazmat.backends import default_backend
-
+from cryptography.hazmat.primitives.serialization import load_der_public_key
+    
 class Crypto:
 
     # ---------------- MD5 ----------------
@@ -36,8 +37,9 @@ class Crypto:
         return pub_pem, priv_pem
 
     @staticmethod
-    def rsa_encrypt(data: dict, pub_key_pem: bytes) -> str:
-        pub_key = serialization.load_pem_public_key(pub_key_pem, backend=default_backend())
+    def rsa_encrypt(data: dict, pub_key_b64: str) -> str:
+        pub_bytes = base64.b64decode(pub_key_b64)  # decode Base64 DER
+        pub_key = load_der_public_key(pub_bytes)   # load as DER
         plaintext = json.dumps(data).encode()
         cipher = pub_key.encrypt(
             plaintext,

@@ -318,144 +318,59 @@ class StatsComparer:
 
 import math
 
-def hex_to_rgb(hex_color):
-    n = int(hex_color.lstrip('#'), 16)
-    return {'r': (n >> 16) & 255, 'g': (n >> 8) & 255, 'b': n & 255}
-
-def interpolate(start, end, t):
-    s = hex_to_rgb(start)
-    e = hex_to_rgb(end)
-    r = round(s['r'] + (e['r'] - s['r']) * t)
-    g = round(s['g'] + (e['g'] - s['g']) * t)
-    b = round(s['b'] + (e['b'] - s['b']) * t)
-    return f"rgb({r}, {g}, {b})"
-
 class ReadabilityEngine:
-    ARI_TABLE = [
-        {'min': -1000, 'max': 0.99, 'grade': "Kindergarten", 'level': "Extremely Easy", 'ages': "5–6 yrs"},
-        {'min': 1, 'max': 1.99, 'grade': "1st Grade", 'level': "Extremely Easy", 'ages': "6–7 yrs"},
-        {'min': 2, 'max': 2.99, 'grade': "2nd Grade", 'level': "Very Easy", 'ages': "7–8 yrs"},
-        {'min': 3, 'max': 3.99, 'grade': "3rd Grade", 'level': "Very Easy", 'ages': "8–9 yrs"},
-        {'min': 4, 'max': 4.99, 'grade': "4th Grade", 'level': "Easy", 'ages': "9–10 yrs"},
-        {'min': 5, 'max': 5.99, 'grade': "5th Grade", 'level': "Fairly Easy", 'ages': "10–11 yrs"},
-        {'min': 6, 'max': 6.99, 'grade': "6th Grade", 'level': "Fairly Easy", 'ages': "11–12 yrs"},
-        {'min': 7, 'max': 7.99, 'grade': "7th Grade", 'level': "Average", 'ages': "12–13 yrs"},
-        {'min': 8, 'max': 8.99, 'grade': "8th Grade", 'level': "Average", 'ages': "13–14 yrs"},
-        {'min': 9, 'max': 9.99, 'grade': "9th Grade", 'level': "Slightly Difficult", 'ages': "14–15 yrs"},
-        {'min': 10, 'max': 10.99, 'grade': "10th Grade", 'level': "Somewhat Difficult", 'ages': "15–16 yrs"},
-        {'min': 11, 'max': 11.99, 'grade': "11th Grade", 'level': "Fairly Difficult", 'ages': "16–17 yrs"},
-        {'min': 12, 'max': 12.99, 'grade': "12th Grade", 'level': "Difficult", 'ages': "17–18 yrs"},
-        {'min': 13, 'max': 1000, 'grade': "College", 'level': "Very Difficult", 'ages': "18–22 yrs"}
-    ]
-
-    FRE_TABLE = [
-        {'min': 140, 'max': 200, 'grade': "Kindergarten", 'level': "Extremely Easy", 'ages': "5–6 yrs", 'gradeRange': 0},
-        {'min': 130, 'max': 139, 'grade': "1st Grade", 'level': "Very Easy", 'ages': "6–7 yrs", 'gradeRange': 1},
-        {'min': 120, 'max': 129, 'grade': "2nd Grade", 'level': "Very Easy", 'ages': "7–8 yrs", 'gradeRange': 2},
-        {'min': 110, 'max': 119, 'grade': "3rd Grade", 'level': "Very Easy", 'ages': "8–9 yrs", 'gradeRange': 3},
-        {'min': 100, 'max': 109, 'grade': "4th Grade", 'level': "Very Easy", 'ages': "9–10 yrs", 'gradeRange': 4},
-        {'min': 90, 'max': 99, 'grade': "5th Grade", 'level': "Very Easy", 'ages': "10–11 yrs", 'gradeRange': 5},
-        {'min': 80, 'max': 89, 'grade': "6th Grade", 'level': "Easy", 'ages': "11–12 yrs", 'gradeRange': 6},
-        {'min': 70, 'max': 79, 'grade': "7th Grade", 'level': "Fairly Easy", 'ages': "12–13 yrs", 'gradeRange': 7},
-        {'min': 60, 'max': 69, 'grade': "8th & 9th Grade", 'level': "Standard", 'ages': "13–15 yrs", 'gradeRange': 8.5},
-        {'min': 50, 'max': 59, 'grade': "10–12th Grade", 'level': "Fairly Difficult", 'ages': "15–18 yrs", 'gradeRange': 11},
-        {'min': 30, 'max': 49, 'grade': "College", 'level': "Difficult", 'ages': "18+ yrs", 'gradeRange': 13.5},
-        {'min': 0, 'max': 29, 'grade': "Professional", 'level': "Very Difficult", 'ages': "18+ yrs", 'gradeRange': 14.5}
-    ]
-
-    def get_color(self, gradeRange):
-        g = float(gradeRange or 0)
-        if g < 0: g = 0
-        if g < 6:
-            return interpolate('#2ECC71', '#1ABC9C', g/5)
-        elif g < 10:
-            return interpolate('#F7DC6F', '#F1C40F', (g-6)/3)
-        elif g < 13:
-            return interpolate('#E67E22', '#D35400', (g-10)/2)
-        else:
-            return '#C0392B'
-
-    def lookup_score(self, score, table):
-        score = float(score)
-        info = next((row for row in table if row['min'] <= score <= row['max']), {})
-        info = dict(info)
-        info['color'] = self.get_color(info.get('gradeRange', score))
-        info['score'] = score
-        return info
-
     def calculateARI(self, data):
         chars = data['character']['charsWithoutSpaces']
         words = data['character']['totalWords']
         sentences = data['sentences']['total']
-        score = 4.71 * (chars/words) + 0.5*(words/sentences) - 21.43
-        return {**self.lookup_score(score, self.ARI_TABLE), 'name': "Automated Readability Index",
-                'formulaHTML': f"4.71*({chars}/{words}) + 0.5*({words}/{sentences}) - 21.43 = {score:.2f}"}
+        return round(4.71 * (chars / words) + 0.5 * (words / sentences) - 21.43, 2)
 
     def calculateFlesch(self, data):
         words = data['character']['totalWords']
         sentences = data['sentences']['total']
         syllables = data['syllables']['total']
-        score = math.ceil(206.835 - 1.015*(words/sentences) - 84.6*(syllables/words))
-        return {**self.lookup_score(score, self.FRE_TABLE), 'name': "Flesch Reading Ease",
-                'formulaHTML': f"206.835 - 1.015*({words}/{sentences}) - 84.6*({syllables}/{words}) = {score:.2f}"}
+        return round(206.835 - 1.015 * (words / sentences) - 84.6 * (syllables / words), 2)
 
     def calculateGFI(self, data):
         words = data['character']['totalWords']
         sentences = data['sentences']['total']
-        compound = data['words']['compound']
         complex_words = data['words']['hard']
-        score = 0.4*((words/(sentences+compound)) + 100*(complex_words/words))
-        return {**self.lookup_score(score, self.ARI_TABLE), 'name': "Gunning Fog Index",
-                'formulaHTML': f"0.4*({words}/({sentences}+{compound}) + 100*({complex_words}/{words})) = {score:.2f}"}
+        compound = data['words']['compound']
+        return round(0.4 * ((words / (sentences + compound)) + 100 * (complex_words / words)), 2)
 
     def calculateFK(self, data):
         words = data['character']['totalWords']
         sentences = data['sentences']['total']
         syllables = data['syllables']['total']
-        score = 0.39*(words/sentences) + 11.8*(syllables/words) - 15.59
-        return {**self.lookup_score(score, self.ARI_TABLE), 'name': "Flesch-Kincaid Grade Level",
-                'formulaHTML': f"0.39*({words}/{sentences}) + 11.8*({syllables}/{words}) - 15.59 = {score:.2f}"}
+        return round(0.39 * (words / sentences) + 11.8 * (syllables / words) - 15.59, 2)
 
     def calculateCLI(self, data):
         letters = data['character']['lettersAZ']
         words = data['character']['totalWords']
         sentences = data['sentences']['total']
-        L = (letters/words)*100
-        S = (sentences/words)*100
-        score = 0.0588*L - 0.296*S - 15.8
-        return {**self.lookup_score(score, self.ARI_TABLE), 'name': "Coleman-Liau Index",
-                'formulaHTML': f"0.0588*({letters}/{words}*100) - 0.296*({sentences}/{words}*100) - 15.8 = {score:.2f}"}
+        L = (letters / words) * 100
+        S = (sentences / words) * 100
+        return round(0.0588 * L - 0.296 * S - 15.8, 2)
 
     def calculateSMOG(self, data):
         sentences = data['sentences']['total']
         complex_words = data['words']['hard']
-        score = 1.043 * math.sqrt((complex_words*(30/sentences)) + 3.1291)
-        return {**self.lookup_score(score, self.ARI_TABLE), 'name': "SMOG Index",
-                'formulaHTML': f"1.043 * sqrt({complex_words}*(30/{sentences}) + 3.1291) = {score:.2f}"}
+        return round(1.043 * math.sqrt((complex_words * (30 / sentences)) + 3.1291), 2)
 
     def calculateLinsearWrite(self, data):
         sentences = data['sentences']['total']
-        compound = data['words']['compound']
         easy = data['words']['easy']
         hard = data['words']['hard']
+        compound = data['words']['compound']
         ignored = 3
-        initial = ((easy-ignored)*1 + hard*3)/(sentences+compound)
-        adjusted = initial/2 if initial > 20 else (initial-2)/2
-        return {**self.lookup_score(adjusted, self.ARI_TABLE), 'name': "Linsear Write",
-                'formulaHTML': f"Initial={initial:.2f}, Adjusted={adjusted:.2f}"}
+        initial = ((easy - ignored) * 1 + hard * 3) / (sentences + compound)
+        adjusted = initial / 2 if initial > 20 else (initial - 2) / 2
+        return round(adjusted, 2)
 
     def calculateFORCAST(self, data):
         words = data['character']['totalWords']
         one_syl = data['syllables']['oneSyl']
-        score = 20 - ((one_syl/words)*150/10)
-        return {**self.lookup_score(score, self.ARI_TABLE), 'name': "FORCAST",
-                'formulaHTML': f"20 - (({one_syl}*150)/({words}*10)) = {score:.2f}"}
-
-    def calculateAverageGrade(self, results):
-        total = sum(item.get('gradeRange', item['score']) for item in results)
-        avg = total / len(results)
-        return {**self.lookup_score(avg, self.ARI_TABLE), 'name': "Consensus Grade Level",
-                'formulaHTML': f"Average = {avg:.2f}"}
+        return round(20 - ((one_syl / words) * 150 / 10), 2)
 
     def calculate(self, data):
         results = [
@@ -468,8 +383,6 @@ class ReadabilityEngine:
             self.calculateLinsearWrite(data),
             self.calculateFORCAST(data)
         ]
-        consensus = self.calculateAverageGrade(results)
-        results.insert(0, consensus)
         return results
 
 class View:

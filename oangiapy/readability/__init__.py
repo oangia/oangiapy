@@ -249,8 +249,8 @@ def handle_request(request):
             return ({'error': 'Input text must between 100 and 1000 characters long.'}, 400)
         pub_key = request.json.get("pub")
         engine = ReadabilityEngine(text)
-        encrypted = Crypto.rsa_encrypt({"r": engine.calculate()}, pub_key)
-        ip = Crypto.rsa_encrypt(request.remote_addr, pub_key)
-        return ({"r": encrypted, "i": ip}, 200)
+        encrypted = Crypto.rsa_encrypt({"fomulas": engine.calculate()}, pub_key)
+        ip = Crypto.rsa_encrypt({"ip": request.remote_addr}, pub_key)
+        return ({"f": encrypted, "i": ip}, 200)
 
     return 'Hello from Flask!'

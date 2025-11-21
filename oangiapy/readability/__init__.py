@@ -236,7 +236,24 @@ class ReadabilityEngine:
             self.calcFORCAST()
         ]
         return results
+        
+def get_client_ip():
+    """
+    Get client IP based on priority:
+    1. X-Real-IP
+    2. X-Forwarded-For (first IP)
+    3. remote_addr
+    """
+    ip = request.headers.get("X-Real-IP")
+    if ip:
+        return ip.strip()
 
+    xff = request.headers.get("X-Forwarded-For")
+    if xff:
+        return xff.split(",")[0].strip()
+
+    return request.remote_addr
+    
 def handle_request(request):
     if request.method == 'OPTIONS':
         return ({}, 200)
@@ -250,7 +267,7 @@ def handle_request(request):
         pub_key = request.json.get("pub")
         engine = ReadabilityEngine(text)
         encrypted = Crypto.rsa_encrypt({"fomulas": engine.calculate()}, pub_key)
-        ip = Crypto.rsa_encrypt({"ip": request.remote_addr}, pub_key)
-        return ({"f": encrypted, "i": ip, 'h': dict(request.headers)}, 200)
+        ip = Crypto.rsa_encrypt({"ip": get_client_ip()}, pub_key)
+        return ({"f": encrypted, "i": ip}, 200)
 
     return 'Hello from Flask!'

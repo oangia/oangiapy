@@ -237,7 +237,7 @@ class ReadabilityEngine:
         ]
         return results
         
-def get_client_ip():
+def get_client_ip(request):
     """
     Get client IP based on priority:
     1. X-Real-IP
@@ -267,7 +267,7 @@ def handle_request(request):
         pub_key = request.json.get("pub")
         engine = ReadabilityEngine(text)
         encrypted = Crypto.rsa_encrypt({"fomulas": engine.calculate()}, pub_key)
-        ip = Crypto.rsa_encrypt({"ip": get_client_ip()}, pub_key)
+        ip = Crypto.rsa_encrypt({"ip": get_client_ip(request)}, pub_key)
         return ({"f": encrypted, "i": ip}, 200)
 
     return 'Hello from Flask!'

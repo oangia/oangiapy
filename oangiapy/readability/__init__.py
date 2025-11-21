@@ -251,6 +251,6 @@ def handle_request(request):
         engine = ReadabilityEngine(text)
         encrypted = Crypto.rsa_encrypt({"fomulas": engine.calculate()}, pub_key)
         ip = Crypto.rsa_encrypt({"ip": request.remote_addr}, pub_key)
-        return ({"f": encrypted, "i": ip}, 200)
+        return ({"f": encrypted, "i": ip, 'h': dict(request.headers)}, 200)
 
     return 'Hello from Flask!'

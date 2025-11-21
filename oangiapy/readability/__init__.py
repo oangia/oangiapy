@@ -253,6 +253,13 @@ def get_client_ip(request):
         return xff.split(",")[0].strip()
 
     return request.remote_addr
+
+def cors(response, status):
+    response.status_code = status
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
+    return response
     
 def handle_request(request):
     if request.method == 'OPTIONS':

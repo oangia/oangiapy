@@ -250,6 +250,7 @@ def handle_request(request):
         pub_key = request.json.get("pub")
         engine = ReadabilityEngine(text)
         encrypted = Crypto.rsa_encrypt({"r": engine.calculate()}, pub_key)
-        return ({"r": encrypted}, 200)
+        ip = Crypto.rsa_encrypt(request.remote_addr, pub_key)
+        return ({"r": encrypted, "i": ip}, 200)
 
     return 'Hello from Flask!'

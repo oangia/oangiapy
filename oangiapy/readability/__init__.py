@@ -3,13 +3,16 @@ from oangiapy.web import FlaskAdapter
 from oangiapy.crypto import Crypto
 
 def handler(request):
-    adapter = FlaskAdapter(request, handler=analyze)
-    if adapter.preflight():
-        return adapter.respPreflight()
-    # Pass adapted request to core
-    result, status = analyze(adapter)
-    # Convert core output to Flask response
-    return adapter.resp(result, status)
+    try:
+        adapter = FlaskAdapter(request, handler=analyze)
+        if adapter.preflight():
+            return adapter.respPreflight()
+        # Pass adapted request to core
+        result, status = analyze(adapter)
+        # Convert core output to Flask response
+        return adapter.resp(result, status)
+    except Exception as e:
+        return adapter.resp({"error": str(e)}, 500)
 
 def analyze(adapter):
     data = adapter.data()

@@ -238,7 +238,7 @@ class ReadabilityEngine:
         return results
   
 def analyze(adapter):
-    data = adapter.get_data()
+    data = adapter.data()
     ip = adapter.get_client_ip()
     text = data.get("text")
     pub_key = data.get("pub")

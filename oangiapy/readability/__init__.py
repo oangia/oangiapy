@@ -28,7 +28,7 @@ def analyze(adapter):
 def yt_video(adapter, data):
     return get_video_info(data.get('video')), 200
 def yt_channel(adapter, data):
-    return get_channel_info(data.get('channel'), 200
+    return get_channel_info(data.get('channel')), 200
     
 def readability(adapter, data)
     ip = adapter.get_client_ip()

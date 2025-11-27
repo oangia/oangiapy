@@ -236,45 +236,17 @@ class ReadabilityEngine:
             self.calcFORCAST()
         ]
         return results
-        
-def get_client_ip(request):
-    """
-    Get client IP based on priority:
-    1. X-Real-IP
-    2. X-Forwarded-For (first IP)
-    3. remote_addr
-    """
-    ip = request.headers.get("X-Real-IP")
-    if ip:
-        return ip.strip()
-
-    xff = request.headers.get("X-Forwarded-For")
-    if xff:
-        return xff.split(",")[0].strip()
-
-    return request.remote_addr
-
-def cors(response, status):
-    response.status_code = status
-    response.headers['Access-Control-Allow-Origin'] = '*'
-    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
-    response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
-    return response
+  
+def analyze(adapter):
+    data = adapter.get_data()
+    ip = adapter.get_client_ip()
+    text = data.get("text")
+    pub_key = data.get("pub")
+    length = len(text)
+    if length < 100 or length > 1000:
+        return {'error': 'Input text must between 100 and 1000 characters long.'}, 400
     
-def handle_request(request):
-    if request.method == 'OPTIONS':
-        return ({}, 200)
-    if request.headers.get("Origin") != 'https://agent52.web.app':
-        return ({"error": "Not found"}, 404)
-    if request.method == 'POST':
-        text = request.json.get('text')   # if raw text
-        length = len(text)
-        if length < 100 or length > 1000:
-            return ({'error': 'Input text must between 100 and 1000 characters long.'}, 400)
-        pub_key = request.json.get("pub")
-        engine = ReadabilityEngine(text)
-        encrypted = Crypto.rsa_encrypt({"fomulas": engine.calculate()}, pub_key)
-        ip = Crypto.rsa_encrypt({"ip": get_client_ip(request)}, pub_key)
-        return ({"f": encrypted, "i": ip}, 200)
-
-    return 'Hello from Flask!'
+    engine = ReadabilityEngine(text)
+    encrypted = Crypto.rsa_encrypt({"fomulas": engine.calculate()}, pub_key)
+    ip = Crypto.rsa_encrypt({"ip": ip}, pub_key)
+    return {"f": encrypted, "i": ip}, 200

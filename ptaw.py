@@ -10,7 +10,7 @@ def hello_world():
 
     # Handle OPTIONS pre-flight or invalid origin
     if adapter.preflight():
-        return adapter.resp(adapter.data(), adapter.preflight_status())
+        return adapter.resp({'error': 'Error}, adapter.preflight_status())
 
     # Pass adapted request to core
     result, status = analyze(adapter)

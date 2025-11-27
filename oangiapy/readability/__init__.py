@@ -254,4 +254,9 @@ def analyze(adapter):
 from oangiapy.web import FlaskAdapter 
 def handler(request):
     adapter = FlaskAdapter(request, handler=analyze)
-    return adapter.process()
+    if adapter.preflight():
+        return adapter.respPreflight()
+    # Pass adapted request to core
+    result, status = analyze(adapter)
+    # Convert core output to Flask response
+    return adapter.resp(result, status)

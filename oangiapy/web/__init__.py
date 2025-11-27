@@ -18,10 +18,27 @@ class FlaskAdapter:
     def _extract_headers(self, request):
         return dict(request.headers)
 
-    def get_data(self):
+    def get_client_ip(request):
+        """
+        Get client IP based on priority:
+        1. X-Real-IP
+        2. X-Forwarded-For (first IP)
+        3. remote_addr
+        """
+        ip = request.headers.get("X-Real-IP")
+        if ip:
+            return ip.strip()
+    
+        xff = request.headers.get("X-Forwarded-For")
+        if xff:
+            return xff.split(",")[0].strip()
+    
+        return request.remote_addr
+
+    def data(self):
         return self.data
 
-    def get_headers(self):
+    def headers(self):
         return self.headers
 
     @staticmethod

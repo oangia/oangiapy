@@ -30,7 +30,7 @@ def yt_video(adapter, data):
 def yt_channel(adapter, data):
     return get_channel_info(data.get('channel')), 200
     
-def readability(adapter, data)
+def readability(adapter, data):
     ip = adapter.get_client_ip()
     text = data.get("text")
     pub_key = data.get("pub")

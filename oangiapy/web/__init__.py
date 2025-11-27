@@ -42,8 +42,11 @@ class FlaskAdapter:
         return request.remote_addr
 
     # Adapter interface
-    def get_data(self):
+    def data(self):
         return self._data
+
+    def headers(self):
+        return self._headers
 
     def get_client_ip(self):
         return self._ip

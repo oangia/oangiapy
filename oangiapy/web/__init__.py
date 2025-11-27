@@ -3,8 +3,9 @@ from flask import make_response, jsonify
 class FlaskAdapter:
     ALLOWED_ORIGIN = "https://agent52.web.app"
 
-    def __init__(self, request):
+    def __init__(self, request, handler):
         self._request = request
+        self._handler = handler
         self._headers = dict(request.headers)
         self._ip = self._extract_ip(request)
 
@@ -64,6 +65,15 @@ class FlaskAdapter:
         else:
             payload = {"error": "Not allowed"}
         return self.resp(payload, self._status)
+
+    def process(self):
+          # Handle OPTIONS pre-flight or invalid origin
+        if self.preflight():
+            return self.respPreflight()
+        # Pass adapted request to core
+        result, status = self._handler(self)
+        # Convert core output to Flask response
+        return adapter.resp(result, status)
 
     def resp(self, payload, status=200, extra_headers=None):
         resp = make_response(jsonify(payload), status)

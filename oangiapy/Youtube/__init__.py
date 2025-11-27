@@ -5,6 +5,30 @@ import os
 #!pip install git+https://github.com/oangia/oangia.github.io.git#subdirectory=python&egg=oangiapy[youtube]
 #from oangiapy.Youtube import download
 #download("TAiGK33ckcU")
+from yt_dlp import YoutubeDL
+import json
+
+def get_channel_info(url):
+    ydl_opts = {
+        'quiet': True,
+        'extract_flat': True,  # only metadata, no video download
+        'skip_download': True,
+    }
+    with YoutubeDL(ydl_opts) as ydl:
+        info = ydl.extract_info(url, download=False)
+    
+    return info
+
+def get_video_info(url):
+    ydl_opts = {
+        'quiet': True,
+        'skip_download': True,
+    }
+    with YoutubeDL(ydl_opts) as ydl:
+        info = ydl.extract_info(url, download=False)
+
+    return info
+    
 def download(id, quality = "best"):
     url = "https://www.youtube.com/watch?v=" + id
     

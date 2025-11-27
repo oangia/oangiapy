@@ -253,5 +253,5 @@ def analyze(adapter):
 
 from oangiapy.web import FlaskAdapter 
 def handler(request):
-    adapter = FlaskAdapter(request, analyze)
+    adapter = FlaskAdapter(request, handler=analyze)
     return adapter.process()

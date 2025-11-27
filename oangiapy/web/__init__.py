@@ -1,33 +1,44 @@
-#from .routes.home import home_bp
-#from .routes.api import api_bp
-import os
-base_dir = os.path.dirname(__file__)
-def gcloud(request):
-    data = {"message": "Hello, World! Second time"}
-    status = 200
-    request_json = request.get_json(silent=True)
-    request_args = request.args
-    if request.method == "OPTIONS":
-        # Allows GET requests from any origin with the Content-Type
-        # header and caches preflight response for an 3600s
-        headers = {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET",
-            "Access-Control-Allow-Headers": "Content-Type",
-            "Access-Control-Max-Age": "3600",
-        }
+from flask import make_response, jsonify
 
-        return ({"status": 204}, 204, headers)
+class FlaskAdapter:
+    def __init__(self, request):
+        # Adapt input
+        self.data = self._extract_data(request)
+        self.headers = self._extract_headers(request)
 
-    # Set CORS headers for the main request
-    headers = {"Access-Control-Allow-Origin": "*"}
-    
-    return (data, status, headers)
-def create_app():
-   # app = Flask(__name__, template_folder=os.path.join(base_dir, "templates"))
-    #CORS(app)
-    # register blueprints
-    #app.register_blueprint(home_bp)
-    #app.register_blueprint(api_bp, url_prefix="/api")
-    pass
-    #return app
+    def _extract_data(self, request):
+        if request.is_json:
+            return request.get_json()
+        if request.form:
+            return dict(request.form)
+        if request.args:
+            return dict(request.args)
+        return {}
+
+    def _extract_headers(self, request):
+        return dict(request.headers)
+
+    def get_data(self):
+        return self.data
+
+    def get_headers(self):
+        return self.headers
+
+    @staticmethod
+    def adapt_response(payload, status=200, extra_headers=None):
+        """
+        Adapt core output into a Flask response.
+        Does NOT call core logic.
+        """
+        resp = make_response(jsonify(payload), status)
+        # Add CORS by default
+        resp.headers["Access-Control-Allow-Origin"] = "*"
+        resp.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+        resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
+
+        # Add any extra headers if provided
+        if extra_headers:
+            for k, v in extra_headers.items():
+                resp.headers[k] = v
+
+        return resp

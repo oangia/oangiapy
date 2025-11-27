@@ -1,5 +1,6 @@
 from oangiapy.readability.ReadabilityEngine import ReadabilityEngine
 from oangiapy.web import FlaskAdapter 
+from oangiapy.crypto import Crypto
 
 def handler(request):
     adapter = FlaskAdapter(request, handler=analyze)

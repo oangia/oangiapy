@@ -73,7 +73,7 @@ class FlaskAdapter:
         # Pass adapted request to core
         result, status = self._handler(self)
         # Convert core output to Flask response
-        return adapter.resp(result, status)
+        return self.resp(result, status)
 
     def resp(self, payload, status=200, extra_headers=None):
         resp = make_response(jsonify(payload), status)

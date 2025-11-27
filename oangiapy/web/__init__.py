@@ -1,10 +1,27 @@
 from flask import make_response, jsonify
 
 class FlaskAdapter:
+    ALLOWED_ORIGIN = "https://agent52.web.app"
+
     def __init__(self, request):
-        # Adapt input
-        self.data = self._extract_data(request)
-        self.headers = self._extract_headers(request)
+        self._request = request
+        self._headers = dict(request.headers)
+        self._ip = self._extract_ip(request)
+
+        # Handle OPTIONS pre-flight
+        if request.method == "OPTIONS":
+            self._data = {}
+            self._status = 200
+            self._preflight = True
+        # Check allowed origin
+        elif request.headers.get("Origin") != self.ALLOWED_ORIGIN:
+            self._data = {"error": "Not found"}
+            self._status = 404
+            self._preflight = True
+        else:
+            self._data = self._extract_data(request)
+            self._status = 200
+            self._preflight = False
 
     def _extract_data(self, request):
         if request.is_json:
@@ -15,47 +32,35 @@ class FlaskAdapter:
             return dict(request.args)
         return {}
 
-    def _extract_headers(self, request):
-        return dict(request.headers)
-
-    def get_client_ip(request):
-        """
-        Get client IP based on priority:
-        1. X-Real-IP
-        2. X-Forwarded-For (first IP)
-        3. remote_addr
-        """
+    def _extract_ip(self, request):
         ip = request.headers.get("X-Real-IP")
         if ip:
             return ip.strip()
-    
         xff = request.headers.get("X-Forwarded-For")
         if xff:
             return xff.split(",")[0].strip()
-    
         return request.remote_addr
 
-    def data(self):
-        return self.data
+    # Adapter interface
+    def get_data(self):
+        return self._data
 
-    def headers(self):
-        return self.headers
+    def get_client_ip(self):
+        return self._ip
 
-    @staticmethod
-    def adapt_response(payload, status=200, extra_headers=None):
-        """
-        Adapt core output into a Flask response.
-        Does NOT call core logic.
-        """
+    def preflight(self):
+        """Returns True if request was OPTIONS or invalid origin"""
+        return getattr(self, "_preflight", False)
+
+    def preflight_status(self):
+        return getattr(self, "_status", 200)
+
+    def resp(self, payload, status=200, extra_headers=None):
         resp = make_response(jsonify(payload), status)
-        # Add CORS by default
         resp.headers["Access-Control-Allow-Origin"] = "*"
         resp.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
         resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
-
-        # Add any extra headers if provided
         if extra_headers:
             for k, v in extra_headers.items():
                 resp.headers[k] = v
-
         return resp

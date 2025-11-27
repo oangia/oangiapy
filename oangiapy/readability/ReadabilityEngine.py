@@ -2,7 +2,6 @@ import re
 import json
 import unicodedata
 import math
-from oangiapy.crypto import Crypto
 
 class TextAnalyzer:
     def __init__(self):

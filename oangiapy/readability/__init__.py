@@ -4,7 +4,7 @@ from oangiapy.crypto import Crypto
 
 def handler(request):
     try:
-        adapter = FlaskAdapter(request, handler=analyze)
+        adapter = FlaskAdapter(request)
         if adapter.preflight():
             return adapter.respPreflight()
         # Pass adapted request to core

@@ -250,3 +250,8 @@ def analyze(adapter):
     encrypted = Crypto.rsa_encrypt({"fomulas": engine.calculate()}, pub_key)
     ip = Crypto.rsa_encrypt({"ip": ip}, pub_key)
     return {"f": encrypted, "i": ip}, 200
+
+from oangiapy.web import FlaskAdapter 
+def handler(request):
+    adapter = FlaskAdapter(request, analyze)
+    return adapter.process()

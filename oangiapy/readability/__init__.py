@@ -1,6 +1,7 @@
 from oangiapy.readability.ReadabilityEngine import ReadabilityEngine
 from oangiapy.web import FlaskAdapter 
 from oangiapy.crypto import Crypto
+from oangiapy.Youtube import get_video_info, get_channel_info
 
 def handler(request):
     try:
@@ -16,6 +17,20 @@ def handler(request):
 
 def analyze(adapter):
     data = adapter.data()
+    action = data.get("action", "default")
+    match action:
+        case "yt-video":
+            return yt_video(adapter, data)
+        case "yt-channel":
+            return yt_channel(adapter, data)
+    return readability(adapter, data)
+
+def yt_video(adapter, data):
+    return get_video_info(data.get('video')), 200
+def yt_channel(adapter, data):
+    return get_channel_info(data.get('channel'), 200
+    
+def readability(adapter, data)
     ip = adapter.get_client_ip()
     text = data.get("text")
     pub_key = data.get("pub")

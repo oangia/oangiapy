@@ -8,27 +8,25 @@ class FlaskAdapter:
         self._headers = dict(request.headers)
         self._ip = self._extract_ip(request)
 
-        # Handle OPTIONS pre-flight
+        # Always extract request data
+        self._data = self._extract_data(request)
+
+        # Preflight or invalid-origin detection
+        origin = request.headers.get("Origin")
+        self._preflight = request.method == "OPTIONS" or origin != self.ALLOWED_ORIGIN
         if request.method == "OPTIONS":
-            self._data = {}
             self._status = 200
-            self._preflight = True
-        # Check allowed origin
-        elif request.headers.get("Origin") != self.ALLOWED_ORIGIN:
-            self._data = {"error": "Not found"}
+        elif origin != self.ALLOWED_ORIGIN:
             self._status = 404
-            self._preflight = True
         else:
-            self._data = self._extract_data(request)
             self._status = 200
-            self._preflight = False
 
     def _extract_data(self, request):
         if request.is_json:
             return request.get_json()
-        if request.form:
+        elif request.form:
             return dict(request.form)
-        if request.args:
+        elif request.args:
             return dict(request.args)
         return {}
 
@@ -43,6 +41,7 @@ class FlaskAdapter:
 
     # Adapter interface
     def data(self):
+        """Return the request payload only"""
         return self._data
 
     def headers(self):
@@ -52,15 +51,23 @@ class FlaskAdapter:
         return self._ip
 
     def preflight(self):
-        """Returns True if request was OPTIONS or invalid origin"""
-        return getattr(self, "_preflight", False)
+        """True if request is OPTIONS or origin not allowed"""
+        return self._preflight
 
     def preflight_status(self):
-        return getattr(self, "_status", 200)
+        return self._status
+
+    def respPreflight(self):
+        """Return proper preflight CORS response"""
+        if self._status == 200:
+            payload = {"message": "Preflight OK"}
+        else:
+            payload = {"error": "Not allowed"}
+        return self.resp(payload, self._status)
 
     def resp(self, payload, status=200, extra_headers=None):
         resp = make_response(jsonify(payload), status)
-        resp.headers["Access-Control-Allow-Origin"] = "*"
+        resp.headers["Access-Control-Allow-Origin"] = self.ALLOWED_ORIGIN
         resp.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
         resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
         if extra_headers:

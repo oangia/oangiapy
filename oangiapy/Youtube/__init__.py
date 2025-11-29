@@ -28,7 +28,7 @@ def get_video_info(url):
     # Write to a temporary file
     # Convert to Netscape format
     lines = ["# Netscape HTTP Cookie File"]  # <--- header required
-    for pair in cookie_str.split('; '):
+    for pair in cookies_string.split('; '):
         if '=' in pair:
             name, value = pair.split('=', 1)
             # Format: domain, TRUE/FALSE, path, secure, expiration, name, value

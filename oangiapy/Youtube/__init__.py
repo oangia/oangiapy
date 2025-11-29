@@ -36,7 +36,6 @@ def extract_video_data(video_url):
 
     data_json = match.group(1)
     data = json.loads(data_json)
-    return data
     # 3. Extract useful info and include HTML
     video_details = data.get('videoDetails', {})
     info = {
@@ -44,7 +43,8 @@ def extract_video_data(video_url):
         'author': video_details.get('author'),
         'lengthSeconds': video_details.get('lengthSeconds'),
         'viewCount': video_details.get('viewCount'),
-        'isLive': video_details.get('isLiveContent')
+        'isLive': video_details.get('isLiveContent'),
+        'html': html
     }
 
     return info

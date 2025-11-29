@@ -4,7 +4,8 @@ setup(
     name='oangiapy',
     version='0.1',
     install_requires=[
-        'cryptography==46.0.3'
+        'cryptography==46.0.3',
+        'requests'
     ],
     extras_require={
         'api': ['cryptography==46.0.3'],

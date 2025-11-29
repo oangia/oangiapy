@@ -26,13 +26,20 @@ def get_channel_info(url):
 
 def get_video_info(url):
     # Write to a temporary file
+    # Convert to Netscape format
+    lines = ["# Netscape HTTP Cookie File"]  # <--- header required
+    for pair in cookie_str.split('; '):
+        if '=' in pair:
+            name, value = pair.split('=', 1)
+            # Format: domain, TRUE/FALSE, path, secure, expiration, name, value
+            lines.append(f".youtube.com\tTRUE\t/\tFALSE\t0\t{name}\t{value}")
+    
+    netscape_cookies = "\n".join(lines)
+    
+    # Write to temp file
     with tempfile.NamedTemporaryFile('w+', delete=False) as f:
-        f.write(cookies_string)
+        f.write(netscape_cookies)
         cookie_file = f.name
-    ydl_opts = {
-        'quiet': True,
-        'skip_download': True,
-        'cookiefile': cookie_file
     }
     with YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(url, download=False)

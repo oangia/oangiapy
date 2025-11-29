@@ -52,7 +52,8 @@ def get_channel_info(url):
         'quiet': True,
         'extract_flat': True,  # only metadata, no video download
         'skip_download': True,
-        'cookies_from_browser': 'chrome'
+        'cookies_from_browser': 'chrome',
+        'flat_playlist': True
     }
     with YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(url, download=False)

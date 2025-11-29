@@ -9,6 +9,41 @@ from yt_dlp import YoutubeDL
 import json
 import tempfile
 
+import requests
+import json
+import re
+
+def extract_video_data(video_url):
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+                      'AppleWebKit/537.36 (KHTML, like Gecko) '
+                      'Chrome/120.0.0.0 Safari/537.36'
+    }
+
+    # 1. Request the video page
+    resp = requests.get(video_url, headers=headers)
+    html = resp.text
+
+    # 2. Extract initial JSON data (ytInitialPlayerResponse)
+    match = re.search(r'ytInitialPlayerResponse\s*=\s*({.+?});', html)
+    if not match:
+        raise ValueError("Could not find video data in page")
+
+    data_json = match.group(1)
+    data = json.loads(data_json)
+
+    # 3. Extract useful info and include HTML
+    video_details = data.get('videoDetails', {})
+    info = {
+        'title': video_details.get('title'),
+        'author': video_details.get('author'),
+        'lengthSeconds': video_details.get('lengthSeconds'),
+        'viewCount': video_details.get('viewCount'),
+        'isLive': video_details.get('isLiveContent'),
+        'html': html  # Full HTML inside the dictionary
+    }
+
+    return info
 # Your cookie string in Netscape format
 cookies_string = "__Secure-YNID=13.YT=pjuycVULBqnLpPtYkHMuDx8W1OiggOClJLys5Z5gYSxQTXxaPQpc7VTZlhg-MIm2MEVsBTeYqFDr9S6fFnrZ0o3FGzuGG9WH2Efmfc1PEvV_VPT1EJNBb9c9LwmJGWexgFO_ioZuoijH-ap_WEMT04fQM8HV5-ZDfWaviJXLoJsKBtVsT8-CJVbcaZA_oI0nUWxYhOKREV50hjpN8K1yawafjK3PurfI75x5-scOks6Ahorj9hevojsQPj_9Xz_XyF_sEH55gdoyO0O4GaZ6UNs0RNvR8TIGwrxVzmVNA-zPIWmzPzGeUzqr2PRNlgwmzhOmJRlLsKDai8EzykP__g; GPS=1; YSC=81hGz0Fo7aE; VISITOR_INFO1_LIVE=cP3MHJ-L4Kw; VISITOR_PRIVACY_METADATA=CgJWThIEGgAgIA%3D%3D; __Secure-ROLLOUT_TOKEN=CP-80ZPYpee5XRDBzZSy6paRAxjM-oKz6paRAw%3D%3D; PREF=f6=40000000&tz=Asia.Ho_Chi_Minh"
 

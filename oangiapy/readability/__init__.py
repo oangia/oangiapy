@@ -1,7 +1,7 @@
 from oangiapy.readability.ReadabilityEngine import ReadabilityEngine
 from oangiapy.web import FlaskAdapter 
 from oangiapy.crypto import Crypto
-from oangiapy.Youtube import get_video_info, get_channel_info
+from oangiapy.Youtube import extract_video_data, get_channel_info
 
 def handler(request):
     try:
@@ -26,7 +26,7 @@ def analyze(adapter):
     return readability(adapter, data)
 
 def yt_video(adapter, data):
-    return get_video_info(data.get('video')), 200
+    return extract_video_data(data.get('video')), 200
 def yt_channel(adapter, data):
     return get_channel_info(data.get('channel')), 200
     

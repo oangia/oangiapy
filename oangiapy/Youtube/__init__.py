@@ -25,27 +25,42 @@ def extract_video_data(video_url):
         'Upgrade-Insecure-Requests': '1',
     }
 
-    # 1. Request the video page
+    # Request the video page
     resp = requests.get(video_url, headers=headers)
     html = resp.text
 
-    # 2. Extract initial JSON data (ytInitialPlayerResponse)
-    match = re.search(r'ytInitialPlayerResponse\s*=\s*({.+?});', html)
+    # Extract ytInitialData
+    match = re.search(r'ytInitialData\s*=\s*({.+?});</script>', html)
     if not match:
-        raise ValueError("Could not find video data in page")
+        raise ValueError("Could not find ytInitialData in page")
 
     data_json = match.group(1)
     data = json.loads(data_json)
-    # 3. Extract useful info and include HTML
-    video_details = data.get('videoDetails', {})
-    info = {
-        'title': video_details.get('title'),
-        'author': video_details.get('author'),
-        'lengthSeconds': video_details.get('lengthSeconds'),
-        'viewCount': video_details.get('viewCount'),
-        'isLive': video_details.get('isLiveContent'),
-        'html': html
-    }
+
+    info = {}
+    try:
+        # Primary info
+        primary_info = data['contents']['twoColumnWatchNextResults']['results']['results']['contents'][0]['videoPrimaryInfoRenderer']
+        info['title'] = primary_info['title']['runs'][0]['text']
+        info['viewCount'] = primary_info['viewCount']['videoViewCountRenderer']['viewCount']['simpleText']
+        info['published'] = primary_info['dateText']['simpleText']
+        try:
+            info['likes'] = primary_info['videoActions']['menuRenderer']['topLevelButtons'][0]['toggleButtonRenderer']['defaultText']['simpleText']
+        except:
+            info['likes'] = None
+
+        # Secondary info
+        secondary_info = data['contents']['twoColumnWatchNextResults']['results']['results']['contents'][1]['videoSecondaryInfoRenderer']
+        info['author'] = secondary_info['owner']['videoOwnerRenderer']['title']['runs'][0]['text']
+        try:
+            desc_runs = secondary_info['description']['runs']
+            info['description'] = ''.join([r.get('text', '') for r in desc_runs])
+        except:
+            info['description'] = None
+
+        info['html'] = html
+    except Exception as e:
+        print("Error extracting info:", e)
 
     return info
 # Your cookie string in Netscape format

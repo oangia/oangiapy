@@ -13,6 +13,7 @@ def get_channel_info(url):
         'quiet': True,
         'extract_flat': True,  # only metadata, no video download
         'skip_download': True,
+        'cookies_from_browser': '__Secure-YNID=13.YT=Hj15VR8ryg7rGNd0dUsqZIp6UOZc4ohvx5FwiV3pC1_fZoIm93_AgGSXWfEOALhzz-Vvt8xj2ALLPvlwjJh9AnWPp-vQWktqaSXw3w_jWhQQ0JXy8U7EW62yk7-2QLWzePucygcCzng0IGSfqsg2UK2SOrv7KvJU7htFXPkqw_vJrJqU-F6YCFSlKO8LC-3DPGwbt6aUyJueKP7Xhn-j6AmTAd0Y6JEx5bJyg23V_ZGhP97i2DfafsBO7dBIo-WVaCfnEqgLD3dnHEp1nGSujmc_yPncvETIG3-p44UNZMCDBbi-YmyX1yu0-X0Uf2vQLsyOME9Pk49ermRs4QJQXw; GPS=1; YSC=plV-cOsNHYw; __Secure-ROLLOUT_TOKEN=CKbXkdz9p-vy-wEQr7rrj-eWkQMY0crbkOeWkQM%3D; VISITOR_INFO1_LIVE=GJHrcOfjC-s; VISITOR_PRIVACY_METADATA=CgJWThIEGgAgWw%3D%3D; PREF=f6=40000000&tz=Asia.Ho_Chi_Minh
     }
     with YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(url, download=False)
@@ -23,6 +24,7 @@ def get_video_info(url):
     ydl_opts = {
         'quiet': True,
         'skip_download': True,
+        'cookies_from_browser': '__Secure-YNID=13.YT=Hj15VR8ryg7rGNd0dUsqZIp6UOZc4ohvx5FwiV3pC1_fZoIm93_AgGSXWfEOALhzz-Vvt8xj2ALLPvlwjJh9AnWPp-vQWktqaSXw3w_jWhQQ0JXy8U7EW62yk7-2QLWzePucygcCzng0IGSfqsg2UK2SOrv7KvJU7htFXPkqw_vJrJqU-F6YCFSlKO8LC-3DPGwbt6aUyJueKP7Xhn-j6AmTAd0Y6JEx5bJyg23V_ZGhP97i2DfafsBO7dBIo-WVaCfnEqgLD3dnHEp1nGSujmc_yPncvETIG3-p44UNZMCDBbi-YmyX1yu0-X0Uf2vQLsyOME9Pk49ermRs4QJQXw; GPS=1; YSC=plV-cOsNHYw; __Secure-ROLLOUT_TOKEN=CKbXkdz9p-vy-wEQr7rrj-eWkQMY0crbkOeWkQM%3D; VISITOR_INFO1_LIVE=GJHrcOfjC-s; VISITOR_PRIVACY_METADATA=CgJWThIEGgAgWw%3D%3D; PREF=f6=40000000&tz=Asia.Ho_Chi_Minh
     }
     with YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(url, download=False)

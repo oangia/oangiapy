@@ -39,8 +39,7 @@ def extract_video_data(video_url):
         'author': video_details.get('author'),
         'lengthSeconds': video_details.get('lengthSeconds'),
         'viewCount': video_details.get('viewCount'),
-        'isLive': video_details.get('isLiveContent'),
-        'html': html  # Full HTML inside the dictionary
+        'isLive': video_details.get('isLiveContent')
     }
 
     return info

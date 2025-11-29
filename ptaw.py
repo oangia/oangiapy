@@ -9,3 +9,9 @@ def hello_world():
 
 if __name__ == '__main__':
     app.run()
+
+import functions_framework
+from oangiapy.readability import handler
+@functions_framework.http
+def hello_http(request):
+    return handler(request)

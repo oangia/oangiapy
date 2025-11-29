@@ -7,6 +7,10 @@ import os
 #download("TAiGK33ckcU")
 from yt_dlp import YoutubeDL
 import json
+import tempfile
+
+# Your cookie string in Netscape format
+cookies_string = "__Secure-YNID=13.YT=pjuycVULBqnLpPtYkHMuDx8W1OiggOClJLys5Z5gYSxQTXxaPQpc7VTZlhg-MIm2MEVsBTeYqFDr9S6fFnrZ0o3FGzuGG9WH2Efmfc1PEvV_VPT1EJNBb9c9LwmJGWexgFO_ioZuoijH-ap_WEMT04fQM8HV5-ZDfWaviJXLoJsKBtVsT8-CJVbcaZA_oI0nUWxYhOKREV50hjpN8K1yawafjK3PurfI75x5-scOks6Ahorj9hevojsQPj_9Xz_XyF_sEH55gdoyO0O4GaZ6UNs0RNvR8TIGwrxVzmVNA-zPIWmzPzGeUzqr2PRNlgwmzhOmJRlLsKDai8EzykP__g; GPS=1; YSC=81hGz0Fo7aE; VISITOR_INFO1_LIVE=cP3MHJ-L4Kw; VISITOR_PRIVACY_METADATA=CgJWThIEGgAgIA%3D%3D; __Secure-ROLLOUT_TOKEN=CP-80ZPYpee5XRDBzZSy6paRAxjM-oKz6paRAw%3D%3D; PREF=f6=40000000&tz=Asia.Ho_Chi_Minh"
 
 def get_channel_info(url):
     ydl_opts = {
@@ -21,10 +25,14 @@ def get_channel_info(url):
     return info
 
 def get_video_info(url):
+    # Write to a temporary file
+    with tempfile.NamedTemporaryFile('w+', delete=False) as f:
+        f.write(cookies_string)
+        cookie_file = f.name
     ydl_opts = {
         'quiet': True,
         'skip_download': True,
-        'cookies_from_browser': 'chrome'
+        'cookiefile': cookie_file
     }
     with YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(url, download=False)

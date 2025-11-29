@@ -40,7 +40,14 @@ def get_video_info(url):
     with tempfile.NamedTemporaryFile('w+', delete=False) as f:
         f.write(netscape_cookies)
         cookie_file = f.name
+
+    ydl_opts = {
+        'quiet': True,
+        'extract_flat': True,  # only metadata, no video download
+        'skip_download': True,
+        'cookiefile': 'cookie_file'
     }
+    
     with YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(url, download=False)
 

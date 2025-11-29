@@ -36,7 +36,7 @@ def extract_video_data(video_url):
 
     data_json = match.group(1)
     data = json.loads(data_json)
-
+    return data["contents"]
     info = {}
     try:
         # Primary info

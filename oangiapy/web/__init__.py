@@ -20,7 +20,8 @@ def dispatch(request):
         if action not in routes:
             return adapter.resp({"error": "Unknown action"}, 400)
 
-        return adapter.resp(routes[action](adapter))
+        result, status = routes[action](adapter)
+        return adapter.resp(result, status)
     except Exception as e:
         return adapter.resp({"error": str(e)}, 500)
 

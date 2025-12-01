@@ -29,56 +29,73 @@ def yt_video(adapter, data):
     return extract_video_data(data.get('video')), 200
     
 def yt_channel(adapter, data):
-    """Extract and return structured YouTube channel data matching the JS structure."""
-    
-    # Get raw channel info
+    """Return pre-processed channel stats in the same structure as analyzeChannelData()."""
+
     raw_info = get_channel_info(data.get('channel'))
-    
     if not raw_info:
         return {'error': 'Could not extract channel information'}, 404
-    
-    # Extract playlist entries (each playlist contains videos)
+
+    total_videos = 0
+    total_views = 0
+    total_duration = 0
+    playlists = []
+    videos_list = []
+
     entries = raw_info.get('entries', [])
-    structured_entries = []
-    
+
     for playlist_entry in entries:
-        if playlist_entry:
-            # Each entry is a playlist with nested videos
-            playlist_videos = []
-            
-            # Check if this playlist has video entries
-            if playlist_entry.get('entries'):
-                for video in playlist_entry.get('entries', []):
-                    if video:
-                        playlist_videos.append({
-                            '_type': video.get('_type', 'url'),
-                            'title': video.get('title'),
-                            'url': video.get('url') or video.get('webpage_url'),
-                            'view_count': video.get('view_count', 0),
-                            'duration': video.get('duration', 0),
-                            'thumbnails': video.get('thumbnails', []),
-                            'id': video.get('id')
-                        })
-            
-            # Add the playlist with its videos
-            structured_entries.append({
-                'title': playlist_entry.get('title'),
-                'entries': playlist_videos
-            })
-    
-    # Return structured data matching the JS expectations
-    structured_response = {
-        'title': raw_info.get('title'),
-        'channel': raw_info.get('channel') or raw_info.get('uploader'),
-        'webpage_url': raw_info.get('webpage_url') or raw_info.get('url'),
-        'uploader': raw_info.get('uploader'),
-        'channel_follower_count': raw_info.get('channel_follower_count', 0),
-        'playlist_count': raw_info.get('playlist_count', 0),
-        'tags': raw_info.get('tags', []),
-        'entries': structured_entries
+        if not playlist_entry:
+            continue
+
+        playlist_videos = []
+        playlist_count = 0
+
+        for video in playlist_entry.get('entries', []) or []:
+            if not video:
+                continue
+
+            v = {
+                '_type': video.get('_type', 'url'),
+                'title': video.get('title'),
+                'url': video.get('url') or video.get('webpage_url'),
+                'view_count': video.get('view_count', 0),
+                'duration': video.get('duration', 0),
+                'thumbnails': video.get('thumbnails', []),
+                'id': video.get('id')
+            }
+
+            if v['_type'] == 'url':
+                total_videos += 1
+                total_views += v['view_count']
+                total_duration += v['duration']
+                videos_list.append(v)
+                playlist_count += 1
+
+            playlist_videos.append(v)
+
+        playlists.append({
+            "title": playlist_entry.get('title') or "Unnamed Playlist",
+            "videos": playlist_count
+        })
+
+    # Same sorting & slicing as JS
+    videos_list.sort(key=lambda x: x.get('view_count', 0), reverse=True)
+    top_videos = videos_list[:3]
+
+    avg_views = round(total_views / total_videos) if total_videos else 0
+    avg_duration = round(total_duration / total_videos) if total_videos else 0
+
+    # EXACT structure as analyzeChannelData() return
+    response = {
+        "totalVideos": total_videos,
+        "totalViews": total_views,
+        "avgViews": avg_views,
+        "avgDuration": avg_duration,
+        "playlists": playlists,
+        "topVideos": top_videos,
     }
-    
-    return structured_response, 200
+
+    return response, 200
     
 def readability(adapter, data):
     ip = adapter.get_client_ip()

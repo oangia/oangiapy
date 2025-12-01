@@ -29,7 +29,7 @@ def yt_video(adapter, data):
     return extract_video_data(data.get('video')), 200
     
 def yt_channel(adapter, data):
-    """Extract and return structured YouTube channel data."""
+    """Extract and return structured YouTube channel data matching the JS structure."""
     
     # Get raw channel info
     raw_info = get_channel_info(data.get('channel'))
@@ -37,27 +37,36 @@ def yt_channel(adapter, data):
     if not raw_info:
         return {'error': 'Could not extract channel information'}, 404
     
-    # Extract all videos as flat list
+    # Extract playlist entries (each playlist contains videos)
     entries = raw_info.get('entries', [])
-    videos = []
+    structured_entries = []
     
-    for entry in entries:
-        if entry:
-            # Get best thumbnail (usually the last one is highest quality)
-            thumbnails = entry.get('thumbnails', [])
-            thumbnail_url = thumbnails[-1].get('url') if thumbnails else None
+    for playlist_entry in entries:
+        if playlist_entry:
+            # Each entry is a playlist with nested videos
+            playlist_videos = []
             
-            videos.append({
-                '_type': entry.get('_type', 'url'),
-                'title': entry.get('title'),
-                'url': entry.get('url') or entry.get('webpage_url'),
-                'view_count': entry.get('view_count', 0),
-                'duration': entry.get('duration', 0),
-                'thumbnail': thumbnail_url,
-                'id': entry.get('id')
+            # Check if this playlist has video entries
+            if playlist_entry.get('entries'):
+                for video in playlist_entry.get('entries', []):
+                    if video:
+                        playlist_videos.append({
+                            '_type': video.get('_type', 'url'),
+                            'title': video.get('title'),
+                            'url': video.get('url') or video.get('webpage_url'),
+                            'view_count': video.get('view_count', 0),
+                            'duration': video.get('duration', 0),
+                            'thumbnails': video.get('thumbnails', []),
+                            'id': video.get('id')
+                        })
+            
+            # Add the playlist with its videos
+            structured_entries.append({
+                'title': playlist_entry.get('title'),
+                'entries': playlist_videos
             })
     
-    # Return structured data
+    # Return structured data matching the JS expectations
     structured_response = {
         'title': raw_info.get('title'),
         'channel': raw_info.get('channel') or raw_info.get('uploader'),
@@ -66,7 +75,7 @@ def yt_channel(adapter, data):
         'channel_follower_count': raw_info.get('channel_follower_count', 0),
         'playlist_count': raw_info.get('playlist_count', 0),
         'tags': raw_info.get('tags', []),
-        'entries': videos
+        'entries': structured_entries
     }
     
     return structured_response, 200

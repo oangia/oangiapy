@@ -26,7 +26,9 @@ def analyze(adapter):
     return readability(adapter, data)
 
 def yt_video(adapter, data):
-    return extract_video_data(data.get('video')), 200def yt_channel(adapter, data):
+    return extract_video_data(data.get('video')), 200
+    
+def yt_channel(adapter, data):
     """Extract and return structured YouTube channel data."""
     
     # Get raw channel info

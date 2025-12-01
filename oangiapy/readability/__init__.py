@@ -51,23 +51,26 @@ def yt_channel(adapter, data):
         for video in playlist_entry.get('entries', []) or []:
             if not video:
                 continue
-
+        
+            view_count = video.get('view_count') or 0
+            duration = video.get('duration') or 0
+        
             v = {
                 '_type': video.get('_type', 'url'),
                 'title': video.get('title'),
                 'url': video.get('url') or video.get('webpage_url'),
-                'view_count': video.get('view_count', 0),
-                'duration': video.get('duration', 0),
+                'view_count': view_count,
+                'duration': duration,
                 'thumbnails': video.get('thumbnails', []),
                 'id': video.get('id')
             }
-
+        
             playlist_videos.append(v)
-
+        
             if v['_type'] == 'url':
                 total_videos += 1
-                total_views += v['view_count']
-                total_duration += v['duration']
+                total_views += view_count
+                total_duration += duration
                 playlist_count += 1
                 videos_list.append(v)
 

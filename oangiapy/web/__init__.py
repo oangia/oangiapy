@@ -1,6 +1,30 @@
 from flask import make_response, jsonify
+routes = {}
 
-class FlaskAdapter:
+def route(action):
+    def wrapper(func):
+        routes[action] = func
+        return func
+    return wrapper
+
+def dispatch(request):
+    try:
+        adapter = FlaskRequestAdapter(request)
+        if adapter.preflight():
+                return adapter.respPreflight()
+        action = adapter.get("action")
+    
+        if not action:
+            return adapter.resp({"error": "Missing action"}, 400)
+    
+        if action not in routes:
+            return adapter.resp({"error": "Unknown action"}, 400)
+
+        return adapter.resp(routes[action](adapter))
+    except Exception as e:
+        return adapter.resp({"error": str(e)}, 500)
+
+class FlaskRequestAdapter:
     ALLOWED_ORIGIN = "https://agent52.web.app"
 
     def __init__(self, request):
@@ -43,6 +67,9 @@ class FlaskAdapter:
     def data(self):
         """Return the request payload only"""
         return self._data
+
+    def get(self, param, default = False):
+        return self._data.get(param, default)
 
     def headers(self):
         return self._headers

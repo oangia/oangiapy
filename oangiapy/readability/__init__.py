@@ -29,8 +29,6 @@ def yt_video(adapter, data):
     return extract_video_data(data.get('video')), 200
     
 def yt_channel(adapter, data):
-    """Return pre-processed channel stats in the same structure as analyzeChannelData()."""
-
     raw_info = get_channel_info(data.get('channel'))
     if not raw_info:
         return {'error': 'Could not extract channel information'}, 404
@@ -47,8 +45,8 @@ def yt_channel(adapter, data):
         if not playlist_entry:
             continue
 
-        playlist_videos = []
         playlist_count = 0
+        playlist_videos = []
 
         for video in playlist_entry.get('entries', []) or []:
             if not video:
@@ -64,35 +62,45 @@ def yt_channel(adapter, data):
                 'id': video.get('id')
             }
 
+            playlist_videos.append(v)
+
             if v['_type'] == 'url':
                 total_videos += 1
                 total_views += v['view_count']
                 total_duration += v['duration']
-                videos_list.append(v)
                 playlist_count += 1
-
-            playlist_videos.append(v)
+                videos_list.append(v)
 
         playlists.append({
             "title": playlist_entry.get('title') or "Unnamed Playlist",
             "videos": playlist_count
         })
 
-    # Same sorting & slicing as JS
+    # Same logic as JS
     videos_list.sort(key=lambda x: x.get('view_count', 0), reverse=True)
     top_videos = videos_list[:3]
 
     avg_views = round(total_views / total_videos) if total_videos else 0
     avg_duration = round(total_duration / total_videos) if total_videos else 0
 
-    # EXACT structure as analyzeChannelData() return
+    # API now returns BOTH raw info AND computed analysis
     response = {
+        # RAW INFO (used by <Basic info card>)
+        "title": raw_info.get("title"),
+        "channel": raw_info.get("channel") or raw_info.get("uploader"),
+        "webpage_url": raw_info.get("webpage_url") or raw_info.get("url"),
+        "uploader": raw_info.get("uploader"),
+        "channel_follower_count": raw_info.get("channel_follower_count", 0),
+        "playlist_count": raw_info.get("playlist_count", 0),
+        "tags": raw_info.get("tags", []),
+
+        # ANALYSIS (exact output of analyzeChannelData)
         "totalVideos": total_videos,
         "totalViews": total_views,
         "avgViews": avg_views,
         "avgDuration": avg_duration,
         "playlists": playlists,
-        "topVideos": top_videos,
+        "topVideos": top_videos
     }
 
     return response, 200

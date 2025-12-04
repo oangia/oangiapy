@@ -108,9 +108,9 @@ class MyHandDetector:
             return (HandType.ONEPAIR, point + zitch / 7937)
 
 class Hand:
-    def __init__(self, cards):
+    def __init__(self, cards, Detector = MyHandDetector):
         self._cards = cards
-        self._detector = MyHandDetector(self._cards)
+        self._detector = Detector(self._cards)
         self._type = self._detector.get_type()
 
     def get_cards(self):

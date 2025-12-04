@@ -1,3 +1,7 @@
+from oangiapy.poker.core.Card import Card
+from oangiapy.poker.core.Hand import Hand
+from oangiapy.poker.core.Hands import Hands
+
 class Algorithm:
     def __init__(self):
         self._CardClass = Card

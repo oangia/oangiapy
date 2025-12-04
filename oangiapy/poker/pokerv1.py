@@ -1,4 +1,5 @@
 from oangiapy.poker.core import Card as BaseCard
+from oangiapy.poker.core import HandDetector as BaseHandDetector
 from oangiapy.poker.core import HandType, PokerAlgo, Player
 
 class Card(BaseCard):
@@ -13,7 +14,7 @@ class Card(BaseCard):
     def get_rank_point(self):
         return self._rank_point
 
-class HandDetector:
+class HandDetector(BaseHandDetector):
     def __init__(self, cards):
         self.cards = cards
 

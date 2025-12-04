@@ -1,5 +1,5 @@
 from oangiapy.poker.core import Card as BaseCard
-from oangiapy.poker.core import HandType
+from oangiapy.poker.core import HandType, PokerAlgo, Player
 
 class Card(BaseCard):
     def __init__(self, name):

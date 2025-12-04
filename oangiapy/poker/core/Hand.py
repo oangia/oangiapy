@@ -11,6 +11,9 @@ class Hand:
     def get_type(self):
         return self._detector.get_type()
 
+    def get_point(self):
+        return self._detector.get_point()
+
     def compare(self, other, zitch=False):
         if self.get_type() < other.get_type():
             return -1

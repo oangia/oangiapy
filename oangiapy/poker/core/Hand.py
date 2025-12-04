@@ -9,7 +9,7 @@ class Hand:
         return self._cards
         
     def get_type(self):
-        return self.self._detector.get_type()
+        return self._detector.get_type()
 
     def compare(self, other, zitch=False):
         if self.get_type() < other.get_type():

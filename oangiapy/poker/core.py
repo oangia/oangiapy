@@ -5,7 +5,7 @@ class Card:
         self._suit = name[-1]
         # my take
         self._rank_value = 12 if self.get_rank() == 1 else self.get_rank() - 2
-        self._rank_point = pow(2, self.rank_value)
+        self._rank_point = pow(2, self._rank_value)
 
     def get_rank(self):
         return self._rank
@@ -40,8 +40,8 @@ class MyHandDetector:
     def __init__(self, cards):
         self.cards = cards
 
-        self.zitch_point = sum(card.rank_point for card in self.cards)
-        self.suit_str = ''.join(c.get_suit() for c in self.cards)
+        self.zitch_point = sum(card.get_rank_point() for card in self.cards)
+        self.suit_str = ''.join(card.get_suit() for card in self.cards)
         if self._hasDup():
             detect = self._detectPair()
         else:
@@ -74,7 +74,7 @@ class MyHandDetector:
         return (HandType.ZITCH, self.zitch_point)
 
     def _detectPair(self):
-        ranks = [c.rank for c in self.cards]
+        ranks = [card.get_rank() for card in self.cards]
         freqs = {}
         for r in ranks:
             freqs[r] = freqs.get(r, 0) + 1
@@ -82,18 +82,18 @@ class MyHandDetector:
         counts = sorted(freqs.values(), reverse=True)
 
         if counts[0] == 4:
-            return (HandType.FOURKIND, self.cards[2].rank_value)
+            return (HandType.FOURKIND, self.cards[2].get_rank_value())
 
         if counts[0] == 3 and counts[1] == 2:
-            return (HandType.FULLHOUSE, self.cards[2].rank_value)
+            return (HandType.FULLHOUSE, self.cards[2].get_rank_value())
 
         if counts[0] == 3:
-            return (HandType.THREEKIND, self.cards[2].rank_value)
+            return (HandType.THREEKIND, self.cards[2].get_rank_value())
 
         if counts[0] == 2 and counts[1] == 2:
-            point = self.cards[1].rank_point + self.cards[3].rank_point
+            point = self.cards[1].get_rank_point() + self.cards[3].get_rank_point()
             zitch = sum(
-                c.rank_value if c.rank not in (self.cards[1].rank, self.cards[3].rank)
+                c.get_rank_value() if c.get_rank() not in (self.cards[1].get_rank(), self.cards[3].get_rank())
                 else 0
                 for c in self.cards
             )
@@ -101,9 +101,9 @@ class MyHandDetector:
 
         if counts[0] == 2:
             for i in range(4):
-                if self.cards[i].rank == self.cards[i+1].rank:
-                    point = self.cards[i].rank_value
-                    zitch = self.zitch_point - self.cards[i].rank_point * 2
+                if self.cards[i].get_rank() == self.cards[i+1].get_rank():
+                    point = self.cards[i].get_rank_value()
+                    zitch = self.zitch_point - self.cards[i].get_rank_point() * 2
                     break
             return (HandType.ONEPAIR, point + zitch / 7937)
 

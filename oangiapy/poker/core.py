@@ -92,7 +92,7 @@ class Hands:
     def __repr__(self):
         return f"Back: {self._back}\nMiddle: {self._middle}\nFront: {self._front}"
 
-  class PokerAlgo:
+class PokerAlgo:
     def __init__(self):
         self._CardClass = Card
         self._HandClass = Hand

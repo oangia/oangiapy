@@ -1,3 +1,5 @@
+from oangiapy.poker.core.Algorithm import Algorithm
+
 class Player:
     def __init__(self, cards, Algo: Algorithm):
         self._algo = Algo()

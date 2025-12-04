@@ -8,7 +8,7 @@ class Hands:
         return self._back
 
     def __lt__(self, other):
-        return self.compare(other) > 0
+        return self.compare(other) <= 0
 
     def compare(self, other, detailed=False):
         front  = self._front.compare(other._front)

@@ -29,6 +29,7 @@ class Hand:
         #    return self.compare_zitch_point(other) if zitch else 0
     def __lt__(self, other):
         return self.compare(other) <= 0
+        
     def compare_zitch_point(self, other):
         if self.get_zitch_point() > other.get_zitch_point():
             return 1

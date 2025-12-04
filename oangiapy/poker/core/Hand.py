@@ -17,6 +17,7 @@ class Hand:
         if self.get_type() > other.get_type():
             return 1
 
+        return 0
         # same level → compare point
         #if self.get_point() > other.get_point():
         #    return 1

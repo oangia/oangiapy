@@ -18,7 +18,7 @@ class Hands:
             return [front, middle, back]
 
         if front == 0 and middle == 0 and back == 0:
-            return 1 if self._front.compareZitchPoint(other._front) == 1 else -1
+            return 0
 
         if front <= 0 and middle <= 0 and back <= 0:
             return -1

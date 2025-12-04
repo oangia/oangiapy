@@ -28,16 +28,15 @@ class HandType:
     STRAIGHTFLUSH = 9
 
 class Hand:
-    def __init__(self, cards, Detector = None):
+    def __init__(self, cards, Detector = HandDetector):
         self._cards = cards
         self._detector = Detector(self._cards)
-        self._type = self._detector.get_type()
 
     def get_cards(self):
         return self._cards
         
     def get_type(self):
-        return self._type
+        return self.self._detector.get_type()
 
     def compare(self, other, zitch=False):
         if self.get_type() < other.get_type():
@@ -64,6 +63,18 @@ class Hand:
 
     def __repr__(self):
         return ",".join(c.get_name() for c in self._cards)
+
+class HandDetector:
+    def __init__(self, cards):
+        self.cards = cards
+        self._type = HandType.ZITCH
+        self._point = 0
+        
+    def get_type(self):
+        return self._type
+
+    def get_point(self):
+        return self._point
 
 class Hands:
     def __init__(self, back, middle, front):

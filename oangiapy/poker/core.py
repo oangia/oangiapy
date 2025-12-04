@@ -189,8 +189,9 @@ class PokerAlgo:
 
     def get_hands_class(self):
         return self._HandsClass
-
+ 
 class Player:
+  
     def __init__(self, cards, Algo: PokerAlgo):
         self._algo = Algo()
         self._cards = self._parse(cards)

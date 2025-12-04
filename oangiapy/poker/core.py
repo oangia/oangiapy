@@ -113,6 +113,9 @@ class Hand:
         self._detector = MyHandDetector(self._cards)
         self._type = self._detector.get_type()
 
+    def get_cards(self):
+        return self._cards
+        
     def get_type(self):
         return self._type
 

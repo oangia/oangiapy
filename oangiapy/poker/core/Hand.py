@@ -15,7 +15,7 @@ class Hand:
         return self._detector.get_point()
 
     def check_dup(self, other):
-        return any(c1.name == c2.name for c1 in self._cards for c2 in other.get_cards())
+        return any(c1.get_name() == c2.get_name() for c1 in self.get_cards() for c2 in other.get_cards())
 
     def compare(self, other, zitch=False):
         if self.get_type() < other.get_type():

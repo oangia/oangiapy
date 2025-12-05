@@ -3,12 +3,22 @@ class Hands:
         self._back = back
         self._middle = middle
         self._front = front
+        self._point = 0
 
     def get_back(self):
         return self._back
 
+    def get_middle(self):
+        return self._middle
+
+    def get_front(self):
+        return self._front    
+
+    def get_point(self):
+        return self._point
+
     def __lt__(self, other):
-        return self.compare(other) <= 0
+        return self.compare(other) < 0
 
     def compare(self, other, detailed=False):
         front  = self._front.compare(other._front)

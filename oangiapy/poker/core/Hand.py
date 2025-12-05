@@ -22,8 +22,6 @@ class Hand:
             return -1
         if self.get_type() > other.get_type():
             return 1
-
-        
         # same level → compare point
         if self.get_point() > other.get_point():
             return 1
@@ -39,5 +37,5 @@ class Hand:
         return self.compare(other) == 1
 
     def __repr__(self):
-        return ",".join(c.get_name() for c in self._cards) + " " + str(self.get_type())
+        return ",".join(c.get_name() for c in self._cards) + " " + str(self.get_type()) + " " + str(self.get_point())
       

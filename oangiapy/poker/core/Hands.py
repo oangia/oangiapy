@@ -18,7 +18,10 @@ class Hands:
         return self._point
 
     def __lt__(self, other):
-        return self.compare(other) < 0
+        return self.compare(other) == -1
+
+    def __gt__(self, other):
+        return self.compare(other) == 1
 
     def compare(self, other, detailed=False):
         front  = self._front.compare(other._front)

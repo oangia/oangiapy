@@ -14,6 +14,9 @@ class Hand:
     def get_point(self):
         return self._detector.get_point()
 
+    def check_dup(self, other):
+        return any(c1.name == c2.name for c1 in self._cards for c2 in other.get_cards())
+
     def compare(self, other, zitch=False):
         if self.get_type() < other.get_type():
             return -1
@@ -28,18 +31,9 @@ class Hand:
             return -1
             
         return 0
-        # same point → compare zitch point (optional)
-        #if self.get_point() == other.get_point():
-        #    return self.compare_zitch_point(other) if zitch else 0
+        
     def __lt__(self, other):
         return self.compare(other) < 0
-        
-    def compare_zitch_point(self, other):
-        if self.get_zitch_point() > other.get_zitch_point():
-            return 1
-        if self.get_zitch_point() < other.get_zitch_point():
-            return -1
-        return 0
 
     def __repr__(self):
         return ",".join(c.get_name() for c in self._cards) + " " + str(self.get_type())

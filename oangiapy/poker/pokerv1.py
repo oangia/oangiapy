@@ -88,11 +88,8 @@ class HandDetector(BaseHandDetector):
 class Hands(BaseHands):
     def __init__(self, back, middle, front):
         super().__init__(back, middle, front)
-        self._point = 0
         self._bonus = 0
-
-    def get_point(self):
-        return self._point
+        self.point_calc()
         
     def point_calc(self):
         system = {

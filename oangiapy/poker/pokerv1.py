@@ -5,7 +5,7 @@ from oangiapy.poker.core import Hand as BaseHand
 from oangiapy.poker.core import HandType, Algorithm, Player
 
 class Hand(BaseHand):
-    def __init__(self, cards, Detector = HandDetector)
+    def __init__(self, cards, Detector = HandDetector):
         super().__init__(cards, Detector = Detector)
         
 class Card(BaseCard):

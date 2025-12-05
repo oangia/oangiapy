@@ -33,7 +33,10 @@ class Hand:
         return 0
         
     def __lt__(self, other):
-        return self.compare(other) < 0
+        return self.compare(other) == -1
+
+    def __gt__(self, other):
+        return self.compare(other) == 1
 
     def __repr__(self):
         return ",".join(c.get_name() for c in self._cards) + " " + str(self.get_type())

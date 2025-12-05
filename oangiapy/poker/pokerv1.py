@@ -4,10 +4,6 @@ from oangiapy.poker.core import Hands as BaseHands
 from oangiapy.poker.core import Hand as BaseHand
 from oangiapy.poker.core import HandType, Algorithm, Player
 
-class Hand(BaseHand):
-    def __init__(self, cards, Detector = HandDetector):
-        super().__init__(cards, Detector = Detector)
-        
 class Card(BaseCard):
     def __init__(self, name):
         super().__init__(name)
@@ -91,6 +87,10 @@ class HandDetector(BaseHandDetector):
                     break
             return (HandType.ONEPAIR, point + zitch / 7937)
             
+class Hand(BaseHand):
+    def __init__(self, cards, Detector = HandDetector):
+        super().__init__(cards, Detector = Detector)
+        
 class Hands(BaseHands):
     def __init__(self, back, middle, front):
         super().__init__(back, middle, front)

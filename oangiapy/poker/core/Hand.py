@@ -50,7 +50,7 @@ class Hand:
 
 class HandTypeDetector:
     def __init__(self, hand):
-        self._type = HandType.ZITCH
+        self._type = Hand.ZITCH
 
         self.zitch_point = sum(card.get_rank_point() for card in hand.get_cards())
         self.suit_str = ''.join(card.get_suit() for card in hand.get_cards())

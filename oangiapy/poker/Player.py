@@ -1,3 +1,5 @@
+from itertools import combinations
+
 class Algorithm:
     def __init__(self, cards):
         self._cards = cards.split(",")

@@ -1,7 +1,7 @@
-from oangiapy.poker.core import Hands as BaseHands
 from oangiapy.poker.core import Card as BaseCard
 from oangiapy.poker.core import Hand as BaseHand
-from oangiapy.poker.core import Hand, Algorithm, Player
+from oangiapy.poker.core import Hands as BaseHands
+from oangiapy.poker.Player import Algorithm, Player
 from oangiapy.poker.detector import HandTypeDetector, HandPointCalculator, HandsPointCalculator
 
 class Card(BaseCard):

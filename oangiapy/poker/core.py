@@ -120,7 +120,12 @@ class Hands:
         return (_back, _middle, _front)
 
     def __lt__(self, other):
-        return self.compare_dominance(other) == -1
+        _back, _middle, _front = self.compare(other)
+        if _back == 0:
+            if _middle == 0:
+                return _front == -1
+            return _middle == -1
+        return _back == -1
 
     def __gt__(self, other):
         return self._point > other._point

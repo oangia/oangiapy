@@ -18,7 +18,14 @@ class Hands:
         return self._point
 
     def __lt__(self, other):
-        return self._point < other._point
+        _back = self._back.compare(other._back)
+        if _back == 0:
+            _middle = self._middle.compare(other._middle)
+            if _middle == 0:
+                _front = self._front.compare(other._front)
+                return _front == -1
+            return _middle == -1
+        return _back == -1
 
     def __gt__(self, other):
         return self._point > other._point

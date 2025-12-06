@@ -7,14 +7,14 @@ class Card:
         self._rank = int(name[:-1])
         self._suit = name[-1]
 
+    def get_name(self):
+        return self._name
+        
     def get_rank(self):
         return self._rank
 
     def get_suit(self):
         return self._suit
-
-    def get_name(self):
-        return self._name
 
     def __eq__(self, other):
         return self._name == other.get_name()
@@ -25,7 +25,7 @@ class Card:
     def __repr__(self):
         return self._name
 
-  class Hand:
+class Hand:
     ZITCH = 0
     ONEPAIR = 1
     TWOPAIR = 2
@@ -38,17 +38,9 @@ class Card:
     
     def __init__(self, cards):
         self._cards = cards
-        self._typeDetector = HandTypeDetector(self)
-        self._pointCalcilator = HandPointCalculator(self)
 
     def get_cards(self):
         return self._cards
-        
-    def get_type(self):
-        return self._typeDetector.get_type()
-
-    def get_point(self):
-        return self._pointCalcilator.get_point()
 
     def check_dup(self, other):
         return any(c1.get_name() == c2.get_name() for c1 in self.get_cards() for c2 in other.get_cards())

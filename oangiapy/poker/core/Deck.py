@@ -11,7 +11,7 @@ class Deck:
     def draw(self, n):
         if n > len(self._cards):
             raise ValueError("not enough cards")
-        return [self._cards.pop() for _ in range(n)]
+        return ",".join([self._cards.pop() for _ in range(n)])
 
     def __len__(self):
         return len(self._cards)

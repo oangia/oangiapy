@@ -96,7 +96,7 @@ class HandsPointCalculator:
             'Zitch': {'f': {'ak': 1000, 'qj': 400}, 'm': 100, 'b': 0}
         }
 
-        front, middle, back = self._front, self._middle, self._back
+        front, middle, back = self._hands.get_front(), self._hands.get_middle(), self._hands.get_back()
         f_level, f_point = front.get_type(), front.get_point()
         m_level, m_point = middle.get_type(), middle.get_point()
         b_level, b_point = back.get_type(), back.get_point()

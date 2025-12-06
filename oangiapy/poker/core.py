@@ -102,7 +102,7 @@ class Hands:
 
     def compare_dominance(self, other):
         _back, _middle, _front = self.compare(other)
-        if _back == 0 and _middle ==0 and _front == 0
+        if _back == 0 and _middle ==0 and _front == 0:
             return 0
 
         if _back >=0 and _middle >= 0 and _front >= 0:

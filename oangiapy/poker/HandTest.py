@@ -15,4 +15,4 @@ class HandTest:
                 cards = deck.draw(5)
                 hand = Hand([Card(c) for c in cards.split(",")])
         
-            print(",".join(c.get_name() for c in hand.get_cards()), hand.get_type())
+            print(",".join(c.get_name() for c in hand.get_cards()), hand.get_type_str())

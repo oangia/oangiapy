@@ -111,10 +111,10 @@ class HandPointCalculator:
                 self._point = self._zitch_point * 100 / 7937
             case Hand.ONEPAIR:
                 for i in range(4):
-                if hand.get_cards()[i].get_rank() == hand.get_cards()[i+1].get_rank():
-                    self._point = hand.get_cards()[i].get_rank_value()
-                    zitch = self.zitch_point - hand.get_cards()[i].get_rank_point() * 2
-                    break
+                    if hand.get_cards()[i].get_rank() == hand.get_cards()[i+1].get_rank():
+                        self._point = hand.get_cards()[i].get_rank_value()
+                        zitch = self.zitch_point - hand.get_cards()[i].get_rank_point() * 2
+                        break
             case Hand.TWOPAIR:
                 self._point = hand.get_cards()[1].get_rank_point() + hand.get_cards()[3].get_rank_point()
                 self._point = self._point * 100 / 7937

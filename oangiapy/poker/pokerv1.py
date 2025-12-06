@@ -1,13 +1,6 @@
 from oangiapy.poker.core import HandDetector as BaseHandDetector
 from oangiapy.poker.core import Hands as BaseHands
-from oangiapy.poker.core import Hand as BaseHand
-from oangiapy.poker.core import Card, HandType, Algorithm, Player
-
-
-            
-class Hand(BaseHand):
-    def __init__(self, cards, Detector = HandDetector):
-        super().__init__(cards, Detector = Detector)
+from oangiapy.poker.core import Card, Hand, HandType, Algorithm, Player
         
 class Hands(BaseHands):
     def __init__(self, back, middle, front):

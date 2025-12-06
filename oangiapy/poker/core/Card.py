@@ -1,4 +1,4 @@
-class Card:
+class BaseCard:
     def __init__(self, name):
         self._name = name
         self._rank = int(name[:-1])
@@ -21,4 +21,15 @@ class Card:
 
     def __repr__(self):
         return self._name
-      
+
+class Card(BaseCard):
+    def __init__(self, name):
+        super().__init__(name)
+        self._rank_value = 12 if self.get_rank() == 1 else self.get_rank() - 2
+        self._rank_point = pow(2, self._rank_value)
+
+    def get_rank_value(self):
+        return self._rank_value
+
+    def get_rank_point(self):
+        return self._rank_point

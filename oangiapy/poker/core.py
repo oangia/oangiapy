@@ -42,6 +42,10 @@ class Hand:
     def get_type(self):
         return Hand.ZITCH
 
+    def get_type_str(self):
+        names = ["Zitch", "One Pair", "Two Pairs", "Three of a Kind", "Straight", "Flush", "Full House", "Four of a Kind", "Straight Flush"]
+        return names[self.get_type)] 
+
     def get_point(self):
         return 0
 
@@ -68,7 +72,7 @@ class Hand:
         return self.compare(other) == 1
 
     def __repr__(self):
-        return ",".join(c.get_name() for c in self._cards) + " " + str(self.get_type()) + " " + str(self.get_point())    
+        return ",".join(c.get_name() for c in self._cards) + " " + self.get_type_str() + " " + str(self.get_point())    
 
 class Hands:
     def __init__(self, back, middle, front):

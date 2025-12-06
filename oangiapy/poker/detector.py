@@ -84,6 +84,7 @@ class HandsPointCalculator:
     def __init__(self, hands):
         self._hands = hands
         self._point = 0
+        self._bonus = 0
         system = {
             'StraightFlush': {'m': 6200, 'b': 4000},
             'FourKind': {'m': 5300, 'b': 3500},

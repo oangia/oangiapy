@@ -26,63 +26,63 @@ class Hands(BaseHands):
         b_level, b_point = back.get_type(), back.get_point()
 
         # Front
-        if f_level == HandType.THREEKIND:
+        if f_level == Hand.THREEKIND:
             self._point += system['ThreeKind']['f'] + f_point
-        elif f_level == HandType.ONEPAIR:
+        elif f_level == Hand.ONEPAIR:
             self._point += system['OnePair']['f'] + f_point
-        elif f_level == HandType.ZITCH:
+        elif f_level == Hand.ZITCH:
             if f_point >= 50:
                 self._point += system['Zitch']['f']['ak'] + f_point
             else:
                 self._point += system['Zitch']['f']['qj'] + f_point
 
         # Middle
-        if m_level == HandType.ZITCH:
+        if m_level == Hand.ZITCH:
             self._point += system['Zitch']['m'] + m_point
-        elif m_level == HandType.ONEPAIR:
+        elif m_level == Hand.ONEPAIR:
             if f_point >= 50:
                 self._point += system['OnePair']['m']['ak'] + m_point
             else:
                 self._point += system['OnePair']['m']['qj'] + m_point
-        elif m_level == HandType.TWOPAIR:
+        elif m_level == Hand.TWOPAIR:
             self._point += system['TwoPair']['m'] + m_point
             self._bonus += m_point
-        elif m_level == HandType.THREEKIND:
+        elif m_level == Hand.THREEKIND:
             self._point += system['ThreeKind']['m'] + m_point
-        elif m_level == HandType.STRAIGHT:
+        elif m_level == Hand.STRAIGHT:
             self._point += system['Straight']['m'] + m_point
-        elif m_level == HandType.FLUSH:
+        elif m_level == Hand.FLUSH:
             self._point += system['Flush']['m'] + m_point
-        elif m_level == HandType.FULLHOUSE:
+        elif m_level == Hand.FULLHOUSE:
             self._point += system['FullHouse']['m'] + m_point
             self._bonus += m_point
-        elif m_level == HandType.FOURKIND:
+        elif m_level == Hand.FOURKIND:
             self._point += system['FourKind']['m'] + m_point
             self._bonus += m_point
-        elif m_level == HandType.STRAIGHTFLUSH:
+        elif m_level == Hand.STRAIGHTFLUSH:
             self._point += system['StraightFlush']['m'] + m_point
             self._bonus += m_point
 
         # Back
-        if b_level == HandType.ZITCH:
+        if b_level == Hand.ZITCH:
             self._point += system['Zitch']['b'] + b_point
-        elif b_level == HandType.ONEPAIR:
+        elif b_level == Hand.ONEPAIR:
             self._point += system['OnePair']['b'] + b_point
-        elif b_level == HandType.TWOPAIR:
+        elif b_level == Hand.TWOPAIR:
             self._point += system['TwoPair']['b'] + b_point
-        elif b_level == HandType.THREEKIND:
+        elif b_level == Hand.THREEKIND:
             self._point += system['ThreeKind']['b'] + b_point
-        elif b_level == HandType.STRAIGHT:
+        elif b_level == Hand.STRAIGHT:
             self._point += system['Straight']['b'] + b_point
-        elif b_level == HandType.FLUSH:
+        elif b_level == Hand.FLUSH:
             self._point += system['Flush']['b'] + b_point
-        elif b_level == HandType.FULLHOUSE:
+        elif b_level == Hand.FULLHOUSE:
             self._point += system['FullHouse']['b'] + b_point
             self._bonus += b_point * 2
-        elif b_level == HandType.FOURKIND:
+        elif b_level == Hand.FOURKIND:
             self._point += system['FourKind']['b'] + b_point
             self._bonus += b_point * 2
-        elif b_level == HandType.STRAIGHTFLUSH:
+        elif b_level == Hand.STRAIGHTFLUSH:
             self._point += system['StraightFlush']['b'] + b_point
             self._bonus += b_point * 2
 

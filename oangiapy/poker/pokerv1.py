@@ -1,7 +1,8 @@
 from oangiapy.poker.core import Hands as BaseHands
 from oangiapy.poker.core import Card as BaseCard
+from oangiapy.poker.core import Hand as BaseHand
 from oangiapy.poker.core import Hand, Algorithm, Player
-
+        
 class Card(BaseCard):
     def __init__(self, name):
         super().__init__(name)
@@ -13,6 +14,18 @@ class Card(BaseCard):
 
     def get_rank_point(self):
         return self._rank_point
+
+class Hand(BaseHand):
+    def __init__(self, cards):
+        super().__init__(cards);
+        self._typeDetector = HandTypeDetector(self)
+        self._pointCalcilator = HandPointCalculator(self)
+        
+    def get_type(self):
+        return self._typeDetector.get_type()
+
+    def get_point(self):
+        return self._pointCalcilator.get_point()
         
 class HandTypeDetector:
     def __init__(self, hand):

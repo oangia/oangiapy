@@ -32,7 +32,6 @@ class Hands(BaseHands):
     def __init__(self, back, middle, front):
         super().__init__(back, middle, front)
         self._pointCalculator = HandsPointCalculator(self)
-        self._bonus = 0
         
     def get_point(self):
         return self._pointCalculator.get_point()

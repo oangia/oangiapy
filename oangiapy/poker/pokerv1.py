@@ -1,4 +1,3 @@
-from oangiapy.poker.core import HandDetector as BaseHandDetector
 from oangiapy.poker.core import Hands as BaseHands
 from oangiapy.poker.core import Card, Hand, Algorithm, Player
         

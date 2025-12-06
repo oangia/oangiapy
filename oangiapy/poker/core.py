@@ -124,24 +124,6 @@ class Hands:
 
     def __gt__(self, other):
         return self._point > other._point
-
-    def compare(self, other, detailed=False):
-        front  = self._front.compare(other._front)
-        middle = self._middle.compare(other._middle)
-        back   = self._back.compare(other._back)
-        if detailed:
-            return [front, middle, back]
-
-        if front == 0 and middle == 0 and back == 0:
-            return 0
-
-        if front <= 0 and middle <= 0 and back <= 0:
-            return -1
-
-        if front >= 0 and middle >= 0 and back >= 0:
-            return 1
-
-        return 0
         
     def __repr__(self):
         return f"Back: {self._back}\nMiddle: {self._middle}\nFront: {self._front}"

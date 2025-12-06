@@ -1,5 +1,3 @@
-from itertools import combinations
-
 class Card:
     def __init__(self, name):
         self._name = name

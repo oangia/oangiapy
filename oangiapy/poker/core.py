@@ -93,13 +93,12 @@ class Hands:
     def get_point(self):
         return self._point
 
-    def compare_point(self, other) {
+    def compare_point(self, other):
         if self.get_point() == other.get_point():
             return 0
         if self.get_point() > other.get_point():
             return 1
         return -1
-    }
 
     def compare_dominance(self, other):
         _back, _middle, _front = self.compare(other)

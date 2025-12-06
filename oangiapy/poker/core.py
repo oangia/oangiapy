@@ -44,7 +44,7 @@ class Hand:
 
     def get_type_str(self):
         names = ["Zitch", "One Pair", "Two Pairs", "Three of a Kind", "Straight", "Flush", "Full House", "Four of a Kind", "Straight Flush"]
-        return names[self.get_type)] 
+        return names[self.get_type()] 
 
     def get_point(self):
         return 0

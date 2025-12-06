@@ -50,6 +50,7 @@ class Hand:
 
 class HandTypeDetector:
     def __init__(self, hand):
+        self._hand = hand
         self._type = Hand.ZITCH
 
         self.zitch_point = sum(card.get_rank_point() for card in hand.get_cards())
@@ -63,7 +64,7 @@ class HandTypeDetector:
         return self._type
 
     def _hasDup(self):
-        return any(hand.get_cards()[i].get_rank() == hand.get_cards()[i+1].get_rank() for i in range(len(hand.get_cards()) - 1))
+        return any(self._hand.get_cards()[i].get_rank() == self._hand.get_cards()[i+1].get_rank() for i in range(len(self._hand.get_cards()) - 1))
 
     def _detectZitch(self):
         self.straight = self.zitch_point in [
@@ -80,7 +81,7 @@ class HandTypeDetector:
         return Hand.ZITCH
 
     def _detectPair(self):
-        ranks = [card.get_rank() for card in hand.get_cards()]
+        ranks = [card.get_rank() for card in self._hand.get_cards()]
         freqs = {}
         for r in ranks:
             freqs[r] = freqs.get(r, 0) + 1
@@ -96,35 +97,33 @@ class HandTypeDetector:
             
         if counts[0] == 2 and counts[1] == 2:
             return Hand.TWOPAIR
-            #return (HandType.TWOPAIR, point + zitch / 7937)
         if counts[0] == 2:
             return Hand.ONEPAIR
-            #return (HandType.ONEPAIR, point + zitch / 7937)
 
 class HandPointCalculator:
     def __init__(self, hand):
+        self._hand = hand
         self._point = 0
-        self._zitch_point = sum(card.get_rank_point() for card in hand.get_cards())
-        hand.get_cards()
-        match hand.get_type():
+        self._zitch_point = sum(card.get_rank_point() for card in self._hand.get_cards())
+        match self._hand.get_type():
             case Hand.ZITCH | Hand.STRAIGHT | Hand.FLUSH | Hand.STRAIGHTFLUSH:
                 self._point = self._zitch_point * 100 / 7937
             case Hand.ONEPAIR:
                 for i in range(4):
-                    if hand.get_cards()[i].get_rank() == hand.get_cards()[i+1].get_rank():
-                        self._point = hand.get_cards()[i].get_rank_value()
-                        zitch = self.zitch_point - hand.get_cards()[i].get_rank_point() * 2
+                    if self._hand.get_cards()[i].get_rank() == self._hand.get_cards()[i+1].get_rank():
+                        self._point = self._hand.get_cards()[i].get_rank_value()
+                        zitch = self.zitch_point - self._hand.get_cards()[i].get_rank_point() * 2
                         break
             case Hand.TWOPAIR:
-                self._point = hand.get_cards()[1].get_rank_point() + hand.get_cards()[3].get_rank_point()
+                self._point = self._hand.get_cards()[1].get_rank_point() + self._hand.get_cards()[3].get_rank_point()
                 self._point = self._point * 100 / 7937
                 zitch = sum(
-                    c.get_rank_value() if c.get_rank() not in (hand.get_cards()[1].get_rank(), hand.get_cards()[3].get_rank())
+                    c.get_rank_value() if c.get_rank() not in (self._hand.get_cards()[1].get_rank(), self._hand.get_cards()[3].get_rank())
                     else 0
-                    for c in hand.get_cards()
+                    for c in self._hand.get_cards()
                 )
             case Hand.THREEKIND | Hand.FULLHOUSE | Hand.FOURKIND:
-                self._point = hand.get_cards()[2].get_rank_value() * 100 / 13
+                self._point = self._hand.get_cards()[2].get_rank_value() * 100 / 13
 
     def get_point(self):
         return self._point

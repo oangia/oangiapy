@@ -42,6 +42,12 @@ class Hand:
     def get_cards(self):
         return self._cards
 
+    def get_type(self):
+        return Hand.ZITCH
+
+    def get_point(self):
+        return 0
+
     def check_dup(self, other):
         return any(c1.get_name() == c2.get_name() for c1 in self.get_cards() for c2 in other.get_cards())
 

@@ -1,5 +1,4 @@
 from itertools import combinations
-import random
 
 class Card:
     def __init__(self, name):
@@ -125,65 +124,3 @@ class Hands:
         
     def __repr__(self):
         return f"Back: {self._back}\nMiddle: {self._middle}\nFront: {self._front}"
-
-class Algorithm:
-    def __init__(self, cards):
-        self._CardClass = Card
-        self._HandClass = Hand
-        self._HandsClass = Hands
-        self._cards = [self.get_card_class()(x) for x in cards.split(",")]
-        self._cards.sort(key=lambda c: (c.get_rank(), c.get_suit()))
-
-    def split_5_5_3_index(self):
-        index = range(13)
-        res = []
-        for back in combinations(index, 5):
-            remain1 = [c for c in index if c not in back]
-            for middle in combinations(remain1, 5):
-                remain2 = [c for c in remain1 if c not in middle]
-                for front in combinations(remain2, 3):
-                    res.append((
-                        back, 
-                        middle, 
-                        front
-                    ))
-        return res
-        
-    def get_card_class(self):
-        return self._CardClass
-
-    def get_hand_class(self):
-        return self._HandClass
-
-    def get_hands_class(self):
-        return self._HandsClass
-
-    def fast_scan(self):
-        return (False, None)
-      
-class Player:
-    def __init__(self, cards, Algo: Algorithm):
-        self._algo = Algo(cards)
-
-    def get_best_hands(self):
-        return self._algo.get_best_hands()
-
-class Deck:
-    suit_order = {"s": 0, "c": 1, "d": 2, "h": 3}
-    def __init__(self):
-        self.reset()
-
-    def reset(self):
-        self._cards = [f"{r}{s}" for r in range(1, 14) for s in "scdh"]
-        random.shuffle(self._cards)
-
-    def draw(self, n):
-        if n > len(self._cards):
-            raise ValueError("not enough cards")
-        return ",".join(sorted(
-            [self._cards.pop() for _ in range(n)],
-            key=lambda x: (int(x[:-1]), self.suit_order[x[-1]])
-        ))
-
-    def __len__(self):
-        return len(self._cards)

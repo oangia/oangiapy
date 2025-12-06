@@ -1,6 +1,7 @@
 import random
 
 class Deck:
+    suit_order = {"s": 0, "c": 1, "d": 2, "h": 3}
     def __init__(self):
         self.reset()
 
@@ -11,7 +12,10 @@ class Deck:
     def draw(self, n):
         if n > len(self._cards):
             raise ValueError("not enough cards")
-        return ",".join([self._cards.pop() for _ in range(n)])
+        return ",".join(sorted(
+            [self._cards.pop() for _ in range(n)],
+            key=lambda x: (int(x[:-1]), self.suit_order[x[-1]])
+        ))
 
     def __len__(self):
         return len(self._cards)

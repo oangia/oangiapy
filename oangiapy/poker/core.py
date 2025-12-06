@@ -117,7 +117,7 @@ class Hands:
         _back = self._back.compare(other.get_back())
         _middle = self._middle.compare(other.get_middle())
         _front = self._front.compare(other.get_front())
-        return [_back, _middle, _front]
+        return _back, _middle, _front
 
     def __lt__(self, other):
         return self.compare_dominance(other) == -1

@@ -8,15 +8,16 @@ class Algorithm:
         index = range(13)
         res = []
         for back in combinations(index, 5):
-            remain1 = [c for c in index if c not in back]
+            back_set = set(back)
+            remain1 = [c for c in index if c not in back_set]
             for middle in combinations(remain1, 5):
-                remain2 = [c for c in remain1 if c not in middle]
-                for front in combinations(remain2, 3):
-                    res.append((
-                        back, 
-                        middle, 
-                        front
-                    ))
+                middle_set = set(middle)
+                front = [c for c in remain1 if c not in middle_set]
+                res.append((
+                    back, 
+                    middle, 
+                    front
+                ))
         return res
 
     def fast_scan(self):

@@ -3,7 +3,6 @@ namespace App\Controllers;
 
 use Illuminate\Http\Request;
 use App\Poker\Poker;
-use App\PokerV2\Poker as PokerV2;
 
 class PokerController {
     public function index() {
@@ -38,25 +37,6 @@ class PokerController {
 
         $game->detect();
 	}
-
-    public function visualizeV2() {
-        $chiAt = Request::get("chiat", false);
-        $aiType = Request::get("aitype", "strongest");
-        $cards = Request::get("cards");
-        $players = Request::get("players");
-
-        $game = new PokerV2;
-        $game->visualize();
-        $game->setChiAt($chiAt);
-        $game->setAiType($aiType);
-        if ($cards) {
-            $game->getCardsInput($cards);
-        } else {
-            $game->generateCards($players);
-        }
-
-        $game->detect();
-    }
 
     public function generate() {
         $result = generateCards(3);

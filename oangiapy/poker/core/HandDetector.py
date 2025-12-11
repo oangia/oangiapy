@@ -1,5 +1,3 @@
-from oangiapy.poker.core.Hand import Hand
-
 class HandDetector:
     def __init__(self, hand):
         self._hand = hand

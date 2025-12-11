@@ -13,7 +13,7 @@ class Hand:
     
     def __init__(self, cards):
         self._cards = cards
-        self._detector = HandDetector
+        self._detector = HandDetector(self)
 
     def get_cards(self):
         return self._cards

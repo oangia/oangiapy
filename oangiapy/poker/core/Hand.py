@@ -1,3 +1,5 @@
+from oangiapy.poker.core.HandDetector import HandDetector
+
 class Hand:
     ZITCH = 0
     ONEPAIR = 1
@@ -11,19 +13,20 @@ class Hand:
     
     def __init__(self, cards):
         self._cards = cards
+        self._detector = HandDetector
 
     def get_cards(self):
         return self._cards
 
     def get_type(self):
-        return Hand.ZITCH
+        return self._detector.get_type()
+
+    def get_point(self):
+        return self._detector.get_point()
 
     def get_type_str(self):
         names = ["Zitch", "One Pair", "Two Pairs", "Three of a Kind", "Straight", "Flush", "Full House", "Four of a Kind", "Straight Flush"]
         return names[self.get_type()] 
-
-    def get_point(self):
-        return 0
 
     def check_dup(self, other):
         return any(c1.get_name() == c2.get_name() for c1 in self.get_cards() for c2 in other.get_cards())

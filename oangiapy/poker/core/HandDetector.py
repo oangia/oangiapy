@@ -57,7 +57,7 @@ class HandDetector:
         if counts[0] == 2:
             return Hand.ONEPAIR
 
-    def calc_point(self)
+    def calc_point(self):
         match self._hand.get_type():
             case Hand.ZITCH | Hand.STRAIGHT | Hand.FLUSH | Hand.STRAIGHTFLUSH:
                 return self._zitch_point * 100 / 7937

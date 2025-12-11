@@ -1,5 +1,5 @@
 from oangiapy.poker.Deck import Deck
-from oangiapy.poker.pokerv1 import Card, Hand
+from oangiapy.poker.core import Card, Hand
 
 class HandTest:
     def __init__(self):

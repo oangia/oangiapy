@@ -4,12 +4,11 @@ setup(
     name='oangiapy',
     version='0.1',
     install_requires=[
-        'cryptography==46.0.3',
-        'requests'
+        
     ],
     extras_require={
         'api': ['cryptography==46.0.3'],
-        'web': ["pymongo", "firebase-admin"],
+        'web': ['requests', "pymongo", "firebase-admin"],
         'youtube': ['yt-dlp', 'webvtt-py'],
         'video': ['pydub', 'moviepy==1.0.3'],
         'tts': ['gTTS', 'SpeechRecognition'],

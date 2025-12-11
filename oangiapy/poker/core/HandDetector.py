@@ -1,7 +1,7 @@
 class HandDetector:
     def __init__(self, hand):
         self._hand = hand
-        self._type = Hand.ZITCH
+        self._type = self._hand.ZITCH
         self._point = 0
 
         self._zitch_point = sum(card.get_rank_point() for card in hand.get_cards())
@@ -28,12 +28,12 @@ class HandDetector:
         self.flush = self.suit_str in ['sssss', 'ccccc', 'ddddd', 'hhhhh']
 
         if self.straight and self.flush:
-            return Hand.STRAIGHTFLUSH
+            return self._hand.STRAIGHTFLUSH
         if self.straight:
-            return Hand.STRAIGHT
+            return self._hand.STRAIGHT
         if self.flush:
-            return Hand.FLUSH
-        return Hand.ZITCH
+            return self._hand.FLUSH
+        return self._hand.ZITCH
 
     def _detectPair(self):
         ranks = [card.get_rank() for card in self._hand.get_cards()]
@@ -44,27 +44,27 @@ class HandDetector:
         counts = sorted(freqs.values(), reverse=True)
 
         if counts[0] == 4:
-            return Hand.FOURKIND
+            return self._hand.FOURKIND
         if counts[0] == 3 and counts[1] == 2:
-            return Hand.FULLHOUSE
+            return self._hand.FULLHOUSE
         if counts[0] == 3:
-            return Hand.THREEKIND
+            return self._hand.THREEKIND
             
         if counts[0] == 2 and counts[1] == 2:
-            return Hand.TWOPAIR
+            return self._hand.TWOPAIR
         if counts[0] == 2:
-            return Hand.ONEPAIR
+            return self._hand.ONEPAIR
 
     def calc_point(self):
-        match self._hand.get_type():
-            case Hand.ZITCH | Hand.STRAIGHT | Hand.FLUSH | Hand.STRAIGHTFLUSH:
+        match self.get_type():
+            case self._hand.ZITCH | self._hand.STRAIGHT | self._hand.FLUSH | self._hand.STRAIGHTFLUSH:
                 return self._zitch_point * 100 / 7937
-            case Hand.ONEPAIR:
+            case self._hand.ONEPAIR:
                 for i in range(4):
                     if self._hand.get_cards()[i].get_rank() == self._hand.get_cards()[i+1].get_rank():
                         zitch = self._zitch_point - self._hand.get_cards()[i].get_rank_point() * 2
                         return self._hand.get_cards()[i].get_rank_value()
-            case Hand.TWOPAIR:
+            case self._hand.TWOPAIR:
                 zitch = sum(
                     c.get_rank_value() if c.get_rank() not in (self._hand.get_cards()[1].get_rank(), self._hand.get_cards()[3].get_rank())
                     else 0
@@ -72,5 +72,5 @@ class HandDetector:
                 )
                 _point = self._hand.get_cards()[1].get_rank_point() + self._hand.get_cards()[3].get_rank_point()
                 return _point * 100 / 7937
-            case Hand.THREEKIND | Hand.FULLHOUSE | Hand.FOURKIND:
+            case self._hand.THREEKIND | self._hand.FULLHOUSE | self._hand.FOURKIND:
                 return self._hand.get_cards()[2].get_rank_value() * 100 / 13

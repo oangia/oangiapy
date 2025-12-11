@@ -4,6 +4,9 @@ class Card:
         self._rank = int(name[:-1])
         self._suit = name[-1]
 
+        self._rank_value = 12 if self.get_rank() == 1 else self.get_rank() - 2
+        self._rank_point = pow(2, self._rank_value)
+
     def get_name(self):
         return self._name
         
@@ -12,6 +15,12 @@ class Card:
 
     def get_suit(self):
         return self._suit
+
+    def get_rank_value(self):
+        return self._rank_value
+
+    def get_rank_point(self):
+        return self._rank_point
 
     def __eq__(self, other):
         return self._name == other.get_name()
